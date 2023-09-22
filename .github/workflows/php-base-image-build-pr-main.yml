@@ -1,0 +1,64 @@
+name: Test, lint and build PHP base Image on Shared Core ECR
+run-name: Test, lint and build PHP base Image on Shared Core ECR
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+
+  php-base-image-build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION : ${{ secrets.DEV_AWS_REGION }} #Change to reflect your Region
+      AWS_ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT }}
+
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Lint check on dockerfile
+      run: docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f dockerfile
+
+    - name: Set IMAGE_TAG
+      run: | 
+        IMAGE_SHA=$(echo $GITHUB_SHA | cut -c 1-6)
+        echo "IMAGE_TAG=vol-php-fpm-7.4.0-alpine-fpm-$IMAGE_SHA" >> $GITHUB_ENV
+  
+    - name: Set up Notation CLI
+      run: |
+        wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
+        sudo dpkg -i aws-signer-notation-cli_amd64.deb
+        notation version
+        notation plugin ls
+
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+
+    - name: Login to Shared Core ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build the Docker image
+      run: |
+        docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
+
+    - name: Snyk scan api image
+      id: scan-api-image
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG
+        args: --file=dockerfile
+      continue-on-error: true

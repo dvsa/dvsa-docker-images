@@ -1,0 +1,64 @@
+name: Build, sign and push PHP base Image on Shared Core ECR
+run-name: Test, sign and push PHP base Image on Shared Core ECR
+
+on:
+  push:
+    branches: 
+    - main
+
+jobs:
+
+  # notation_setup:
+  #   uses: ./.github/workflows/notation-setup-action.yaml
+
+  php-base-image-push:
+
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION : ${{ secrets.DEV_AWS_REGION }} #Change to reflect your Region
+      AWS_ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT }}
+
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set IMAGE_TAG
+      run: | 
+        IMAGE_SHA=$(echo $GITHUB_SHA | cut -c 1-6)
+        echo "IMAGE_TAG=vol-php-fpm-7.4.0-alpine-fpm-$IMAGE_SHA" >> $GITHUB_ENV
+  
+    - name: Set up Notation CLI
+      run: |
+        wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
+        sudo dpkg -i aws-signer-notation-cli_amd64.deb
+        notation version
+        notation plugin ls
+
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+
+    - name: Login to Shared Core ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build the Docker image
+      run: |
+        docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
+
+    - name: Push docker base image
+      id: push-images
+      run: |
+        docker push ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG
+        echo "::set-output name=imageTag::${IMAGE_TAG}"
+
+    - name: Sign base images
+      run: |
+        notation sign ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DEV_VOL_IMAGE_SIGNING_PROFILE }}" 
