@@ -2,14 +2,14 @@
 
 
 
-FROM php:7.4.0-fpm-alpine as production
+FROM php:7.4.33-fpm-alpine as production
 
 #php:7.4.0-fpm-alpine
 # php:8.0-fpm-alpine
 
 LABEL maintainer="shaun.hare@dvsa.gov.uk"
 LABEL description="PHP Alpine base image with dependency packages"
-LABEL Name="vol-php-fpm:7.4.0-alpine-fpm"
+LABEL Name="vol-php-fpm:7.4.33-alpine-fpm"
 LABEL Version="0.1"
 
 RUN apk add --no-cache \
