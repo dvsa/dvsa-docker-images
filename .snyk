@@ -1,0 +1,5 @@
+ignore:
+ SNYK-ALPINE316-CURL-3320719:
+    - '•':
+        reason: This is the version in use
+        expires: '2023-10-30T20:36:54.553Z'
