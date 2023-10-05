@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Lint check on dockerfile
-      run: docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f dockerfile
+      run: docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/vol-php-fpm//dockerfile
 
     - name: Set IMAGE_TAG
       run: | 
