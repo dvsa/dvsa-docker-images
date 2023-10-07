@@ -9,11 +9,10 @@ for results in $(jq -c '.[]' build.json); do
 
 
     if [ "$build" == "true" ]; then
-        echo "Building $buildName ..."
-        245185850403.dkr.ecr.eu-west-1.amazonaws.com/php-base
+        echo "Building $repoName ..."
         buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repo/$repoName:$tag-$SHA
         buildCommand="docker build -t $buildTag --file ./build/$repoName/$dockerFile build/."
     else
-        echo "Not building - $buildName ,build parameter set to false"
+        echo "Not building - $repoName ,build parameter equal to false"
     fi
 done
