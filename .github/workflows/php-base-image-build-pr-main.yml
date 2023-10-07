@@ -51,6 +51,8 @@ jobs:
 
     - name: Build the Docker image
       run: |
+        pwd
+        ls
         bash scripts/docker-build.sh
         #docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
 
