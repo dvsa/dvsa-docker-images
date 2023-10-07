@@ -11,8 +11,9 @@ for results in $(jq -c '.[]' build.json); do
     if [ "$build" == "true" ]; then
         echo "Building $repoName ..."
         buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repo/$repoName:$tag-$SHA
-        buildCommand="docker build -t $buildTag --file ./build/$repoName/$dockerFile build/."
+        docker build -t $buildTag --file ./build/$repoName/$dockerFile build/.
     else
         echo "Not building - $repoName ,build parameter equal to false"
     fi
+
 done
