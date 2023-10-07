@@ -12,7 +12,7 @@ jq -c '.[]' build.json | while read -r results; do
     if [ "$build" == "true" ]; then
         echo "Building $repoName ..."
         buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
-        docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
+        docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" ./build/.
     else
         echo "Not building - $repoName, build parameter equal to false"
     fi
