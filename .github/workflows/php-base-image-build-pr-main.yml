@@ -86,7 +86,7 @@ jobs:
               registry=$(echo "$results" | jq -r '.registry')
           
               if [ "$build" == "true" ]; then
-                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
+                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA
               else
                   echo "Not building - $repoName, build parameter equal to false"
               fi
