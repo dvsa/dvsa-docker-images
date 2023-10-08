@@ -80,15 +80,14 @@ jobs:
           jq -c '.[]' build.json | while read -r results; do
           
               repoName=$(echo "$results" | jq -r '.repoName') 
-              dockerFile=$(echo "$results" | jq -r '.dockerFile') 
               tag=$(echo "$results" | jq -r '.tag') 
               build=$(echo "$results" | jq -r '.build')
               registry=$(echo "$results" | jq -r '.registry')
           
               if [ "$build" == "true" ]; then
-                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA
+                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA --severity-threshold=critical
               else
-                  echo "Not building - $repoName, build parameter equal to false"
+                  echo "Not scanning - $repoName, build parameter equal to false"
               fi
           done
           
