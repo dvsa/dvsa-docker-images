@@ -71,17 +71,22 @@ jobs:
         bash scripts/docker-build.sh
         #docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
 
-    - name: Docker image list
-      run: | 
-       image_list=$(docker images --format "{{.Repository}}")
-
       
     - name: snyk scan api image
       run: |
-        image_list=$(docker images --format "{{.Repository}}")
-        for image in $image_list; do
-          snyk container test $image
-        done    
+          SHA=$(git rev-parse --short HEAD)
+          jq -c '.[]' build.json | while read -r results; do
+            build=$(echo "$results" | jq -r '.build')
+            repoName=$(echo "$results" | jq -r '.repoName')
+            dockerFile=$(echo "$results" | jq -r '.dockerFile')
+            registry=$(echo "$results" | jq -r '.registry')
+            tag=$(echo "$results" | jq -r '.tag') 
+            if [ "$build" == "true" ]; then
+               snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
+            else
+              echo "Not linting - $repoName, build parameter equal to false"
+            fi
+          done
        
   
 
