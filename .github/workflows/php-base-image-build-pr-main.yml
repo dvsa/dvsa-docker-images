@@ -80,7 +80,7 @@ jobs:
       run: |
         image_list=$(docker images --format "{{.Repository}}")
         for image in $image_list; do
-          snyk container test --all-projects $image
+          snyk container test $image
         done    
        
   
