@@ -15,6 +15,7 @@ jobs:
     env:
       AWS_REGION : ${{ secrets.DEV_AWS_REGION }} #Change to reflect your Region
       AWS_ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     permissions:
       id-token: write   # This is required for requesting the JWT
@@ -74,7 +75,13 @@ jobs:
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        image: 
+      
+    - name: snyk scan api image
+      run: |
+        image_list=$(docker images --format "{{.Repository}}")
+        for image in $image_list; do
+          snyk container test --all-projects $image
+        done    
+       
   
 
