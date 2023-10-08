@@ -51,17 +51,18 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        pwd
-        ls
         bash scripts/docker-build.sh
         #docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
 
     - name: Snyk scan api image
       id: scan-api-image
-      uses: snyk/actions/docker@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        image: ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG
-        args: --file=dockerfile
-      #continue-on-error: true
+      run: |
+        image_list=$(docker images --format "{{.Repository}}")
+        for image in $image_list; do
+          uses: snyk/actions/docker@master
+          env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          with:
+            image: $image
+        done    
+
