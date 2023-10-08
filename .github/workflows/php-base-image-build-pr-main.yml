@@ -31,7 +31,7 @@ jobs:
           repoName=$(echo "$results" | jq -r '.repoName')
           dockerFile=$(echo "$results" | jq -r '.dockerFile') 
           if [ "$build" == "true" ]; then
-            docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerfile
+            docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerFile
           else
             echo "Not linting - $repoName, build parameter equal to false"
           fi
