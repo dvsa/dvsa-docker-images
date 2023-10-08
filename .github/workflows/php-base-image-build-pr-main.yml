@@ -24,7 +24,18 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Lint check on dockerfile
-      run: docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/vol-php-fpm//dockerfile
+      run: |
+        jq -c '.[]' build.json | while read -r results; do
+          build=$(echo "$results" | jq -r '.build')
+          repoName=$(echo "$results" | jq -r '.repoName')
+          dockerFile=$(echo "$results" | jq -r '.dockerFile') 
+          if [ "$build" == "true" ]; then
+            docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerfile
+          else
+            echo "Not linting - $repoName, build parameter equal to false"
+          fi
+        done
+        
 
     - name: Set IMAGE_TAG
       run: | 
@@ -54,15 +65,16 @@ jobs:
         bash scripts/docker-build.sh
         #docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
 
+    - name: Docker image list
+      run: | 
+       image_list=$(docker images --format "{{.Repository}}")
+
     - name: Snyk scan api image
       id: scan-api-image
-      run: |
-        image_list=$(docker images --format "{{.Repository}}")
-        for image in $image_list; do
-          uses: snyk/actions/docker@master
-          env:
-            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          with:
-            image: $image
-        done    
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: 
+  
 
