@@ -75,18 +75,23 @@ jobs:
     - name: snyk scan api image
       run: |
           SHA=$(git rev-parse --short HEAD)
+
+          # Iterate over JSON objects in build.json
           jq -c '.[]' build.json | while read -r results; do
-            build=$(echo "$results" | jq -r '.build')
-            repoName=$(echo "$results" | jq -r '.repoName')
-            dockerFile=$(echo "$results" | jq -r '.dockerFile')
-            registry=$(echo "$results" | jq -r '.registry')
-            tag=$(echo "$results" | jq -r '.tag') 
-            if [ "$build" == "true" ]; then
-               snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
-            else
-              echo "Not linting - $repoName, build parameter equal to false"
-            fi
+          
+              repoName=$(echo "$results" | jq -r '.repoName') 
+              dockerFile=$(echo "$results" | jq -r '.dockerFile') 
+              tag=$(echo "$results" | jq -r '.tag') 
+              build=$(echo "$results" | jq -r '.build')
+              registry=$(echo "$results" | jq -r '.registry')
+          
+              if [ "$build" == "true" ]; then
+                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
+              else
+                  echo "Not building - $repoName, build parameter equal to false"
+              fi
           done
+          
        
   
 
