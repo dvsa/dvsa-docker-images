@@ -61,6 +61,11 @@ jobs:
       with:
         mask-password: 'true'
 
+    - name: Install snyk cli
+      run: |
+        npm install -g snyk
+
+
     - name: Build the Docker image
       run: |
         bash scripts/docker-build.sh
@@ -70,10 +75,6 @@ jobs:
       run: | 
        image_list=$(docker images --format "{{.Repository}}")
 
-    - name: Run Snyk to check Kubernetes manifest file for issues
-      uses: snyk/actions/iac@master
-      env:
-         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
     - name: snyk scan api image
       run: |
