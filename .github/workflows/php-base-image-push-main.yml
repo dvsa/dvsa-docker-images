@@ -38,6 +38,7 @@ jobs:
       with:
         version: "1.0.0"
 
+
     - name: Set up Notation CLI
       run: |
         wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
@@ -67,7 +68,6 @@ jobs:
     - name: Push docker base image
       id: push-images
       run: |
-          set -x
           SHA=$(git rev-parse --short HEAD)
 
           # Iterate over JSON objects in build.json
@@ -87,10 +87,13 @@ jobs:
     
     - name: Sign base images
       run: |
+          SHA=$(git rev-parse --short HEAD)
           jq -c '.[]' build.json | while read -r results; do
             build=$(echo "$results" | jq -r '.build')
             repoName=$(echo "$results" | jq -r '.repoName')
-            dockerFile=$(echo "$results" | jq -r '.dockerFile') 
+            dockerFile=$(echo "$results" | jq -r '.dockerFile')
+            tag=$(echo "$results" | jq -r '.tag') 
+
             if [ "$build" == "true" ]; then
               notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DEV_VOL_IMAGE_SIGNING_PROFILE }}" 
             else
