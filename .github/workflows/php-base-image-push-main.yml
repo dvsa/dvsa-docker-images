@@ -19,6 +19,7 @@ jobs:
       AWS_REGION : ${{ vars.DVSA_AWS_REGION }} #Change to reflect your Region
       AWS_ACCOUNT_ID: ${{ secrets.DVSA_AWS_SHAREDCOREECR_ID }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      AWS_DEFAULT_REGION: ${{ vars.DVSA_AWS_REGION }}
 
     permissions:
       id-token: write   # This is required for requesting the JWT
