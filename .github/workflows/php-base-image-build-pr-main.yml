@@ -52,7 +52,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
-        aws-region: ${{secrets.DEV_AWS_REGION}}
+        aws-region: ${{vars.DVSA_AWS_REGION}}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
     - name: Login to Shared Core ECR
