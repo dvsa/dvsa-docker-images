@@ -46,9 +46,10 @@ jobs:
 
     - name: Login to Shared Core ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@v2
       with:
         mask-password: 'true'
+        
 
     - name: Build the Docker image
       run: |
@@ -68,6 +69,7 @@ jobs:
               build=$(echo "$results" | jq -r '.build')
    
               if [ "$build" == "true" ]; then
+                  echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
                   docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
               else
                   echo "Not pushing - $repoName, build parameter equal to false"
