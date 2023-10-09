@@ -95,7 +95,7 @@ jobs:
             tag=$(echo "$results" | jq -r '.tag') 
 
             if [ "$build" == "true" ]; then
-              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DEV_VOL_IMAGE_SIGNING_PROFILE }}" 
+              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DVSA_AWS_SHAREDCORECR_IMAGE_SIGNING_PROFILE }}" 
             else
               echo "Not linting - $repoName, build parameter equal to false"
             fi
