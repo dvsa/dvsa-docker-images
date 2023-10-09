@@ -3,7 +3,7 @@ Docker base Images for use in DVSA projects
 
 The images will be used by all the base images used in the project. The github repo is structured to cater the multiple docker builds in a single repo 
 
-`build` - Contains the the repo name for instance `vol-php-fpm` , if you want to create another docker image, create another folder and have your dockerfile in that folder along with any required files etc.
+`build` - Contains the the repo name for instance `php-base` , if you want to create another docker image, create another folder and have your dockerfile in that folder along with any required files etc.
 
 `scripts` - Scripts used in the workflow lives here
 
@@ -22,14 +22,12 @@ The images will be used by all the base images used in the project. The github r
     ```
     [
         {
-            "registry": "php-base",
-            "repoName": "vol-php-fpm",
+            "repoName": "php-base",
             "dockerFile": "dockerfile",
             "tag": "7.4.0-alpine-fpm",
             "build": true
         },
         {
-            "registry": "php-base",
             "repoName": "myreponame",
             "dockerFile": "dockerfile",
             "tag": "<mytag>",
@@ -38,4 +36,6 @@ The images will be used by all the base images used in the project. The github r
    ] 
    ```
    commit and test
+
+   Note: you should have the ECR repo already create in aws to make it work 
 
