@@ -60,6 +60,7 @@ jobs:
     - name: Push docker base image
       id: push-images
       run: |
+          set -x
           SHA=$(git rev-parse --short HEAD)
 
           # Iterate over JSON objects in build.json

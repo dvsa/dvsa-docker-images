@@ -89,6 +89,7 @@ jobs:
                   echo "Not scanning - $repoName, build parameter equal to false"
               fi
           done
+      continue-on-error: true
           
        
   
