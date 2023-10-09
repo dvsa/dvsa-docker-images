@@ -37,5 +37,5 @@ The images will be used by all the base images used in the project. The github r
    ```
    commit and test
 
-   Note: you should have the ECR repo already create in aws to make it work 
+   Note: you should have the ECR repo already created in aws to make it work 
 
