@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION : ${{ secrets.DEV_AWS_REGION }} #Change to reflect your Region
-      AWS_ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT }}
+      AWS_REGION : ${{ vars.DVSA_AWS_REGION }} #Change to reflect your Region
+      AWS_ACCOUNT_ID: ${{ secrets.DVSA_AWS_SHAREDCOREECR_ID }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     permissions:
