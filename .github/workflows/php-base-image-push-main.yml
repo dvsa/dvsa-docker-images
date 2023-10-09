@@ -74,8 +74,7 @@ jobs:
                   echo "Not pushing - $repoName, build parameter equal to false"
               fi
           done
-          echo "::set-output name=imageTag::${$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA}"
-
+    
     - name: Sign base images
       run: |
           jq -c '.[]' build.json | while read -r results; do
