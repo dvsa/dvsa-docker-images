@@ -7,11 +7,10 @@ jq -c '.[]' build.json | while read -r results; do
     dockerFile=$(echo "$results" | jq -r '.dockerFile') 
     tag=$(echo "$results" | jq -r '.tag') 
     build=$(echo "$results" | jq -r '.build')
-    registry=$(echo "$results" | jq -r '.registry')
 
     if [ "$build" == "true" ]; then
         echo "Building $repoName ..."
-        buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA"
+        buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA"
         docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
     else
         echo "Not building - $repoName, build parameter equal to false"

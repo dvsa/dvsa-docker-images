@@ -1,7 +1,6 @@
 [
     {
-        "registry": "php-base",
-        "repoName": "vol-php-fpm",
+        "repoName": "php-base",
         "dockerFile": "dockerfile",
         "tag": "7.4.0-alpine-fpm",
         "build": true

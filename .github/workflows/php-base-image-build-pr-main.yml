@@ -82,10 +82,9 @@ jobs:
               repoName=$(echo "$results" | jq -r '.repoName') 
               tag=$(echo "$results" | jq -r '.tag') 
               build=$(echo "$results" | jq -r '.build')
-              registry=$(echo "$results" | jq -r '.registry')
           
               if [ "$build" == "true" ]; then
-                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA --severity-threshold=critical
+                  snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --severity-threshold=critical
               else
                   echo "Not scanning - $repoName, build parameter equal to false"
               fi

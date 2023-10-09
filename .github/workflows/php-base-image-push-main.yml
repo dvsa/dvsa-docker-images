@@ -66,10 +66,9 @@ jobs:
               repoName=$(echo "$results" | jq -r '.repoName') 
               tag=$(echo "$results" | jq -r '.tag') 
               build=$(echo "$results" | jq -r '.build')
-              registry=$(echo "$results" | jq -r '.registry')
    
               if [ "$build" == "true" ]; then
-                  docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA
+                  docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
               else
                   echo "Not pushing - $repoName, build parameter equal to false"
               fi
@@ -82,7 +81,7 @@ jobs:
             repoName=$(echo "$results" | jq -r '.repoName')
             dockerFile=$(echo "$results" | jq -r '.dockerFile') 
             if [ "$build" == "true" ]; then
-              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$registry/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DEV_VOL_IMAGE_SIGNING_PROFILE }}" 
+              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DEV_VOL_IMAGE_SIGNING_PROFILE }}" 
             else
               echo "Not linting - $repoName, build parameter equal to false"
             fi
