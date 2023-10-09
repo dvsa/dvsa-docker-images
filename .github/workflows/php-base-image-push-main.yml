@@ -4,7 +4,7 @@ run-name: Test, sign and push PHP base Image on Shared Core ECR
 on:
   push:
     branches: 
-    - AWSRESET1-365
+    - feature/AWSRESET1-365
 
 jobs:
 
