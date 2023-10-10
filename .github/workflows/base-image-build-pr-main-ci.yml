@@ -43,7 +43,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
-        aws-region: $AWS_REGION
+        aws-region: ${{ vars.DVSA_AWS_REGION }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
       #failfast - credential configuration only to detect failure on PR
