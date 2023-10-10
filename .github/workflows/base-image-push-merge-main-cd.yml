@@ -17,9 +17,8 @@ jobs:
 
     env:
       AWS_REGION : ${{ vars.DVSA_AWS_REGION }} #Change to reflect your Region
-      AWS_ACCOUNT_ID: ${{ secrets.DVSA_AWS_SHAREDCOREECR_ID }}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID_SHAREDCOREECR }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      AWS_DEFAULT_REGION: ${{ vars.DVSA_AWS_REGION }}
 
     permissions:
       id-token: write   # This is required for requesting the JWT
@@ -34,7 +33,7 @@ jobs:
       with:
         version: "1.0.0"
 
-      # download the required plugin for notary
+      # download the required plugin for notary # llok into the ways to do it via action
     - name: Set up Notation CLI
       run: |
         wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
@@ -46,7 +45,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
-        aws-region:  ${{vars.DVSA_AWS_REGION}}
+        aws-region: $AWS_REGION
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
     - name: Login to Shared Core ECR
@@ -58,7 +57,24 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        bash scripts/docker-build.sh
+        SHA=$(git rev-parse --short HEAD)
+
+        # Iterate over JSON objects in build.json
+        jq -c '.[]' build.json | while read -r results; do
+        
+            repoName=$(echo "$results" | jq -r '.repoName') 
+            dockerFile=$(echo "$results" | jq -r '.dockerFile') 
+            tag=$(echo "$results" | jq -r '.tag') 
+            build=$(echo "$results" | jq -r '.build')
+        
+            if [ "$build" == "true" ]; then
+                echo "Building $repoName ..."
+                buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA"
+                docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
+            else
+                echo "Not building - $repoName, build parameter equal to false"
+            fi
+        done
 
     - name: Push docker base image
       id: push-images
@@ -80,6 +96,7 @@ jobs:
               fi
           done
     
+    #ACTIONS - look into docker trust with aws signer
     - name: Sign base images
       run: |
           SHA=$(git rev-parse --short HEAD)

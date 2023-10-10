@@ -2,7 +2,7 @@
     {
         "repoName": "php-base",
         "dockerFile": "dockerfile",
-        "tag": "7.4.0-alpine-fpm",
+        "tag": "7.4.33-alpine-fpm",
         "build": true
     }
 ]

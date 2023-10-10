@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION : ${{ secrets.DEV_AWS_REGION }} #Change to reflect your Region
-      AWS_ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT }}
+      AWS_REGION : ${{ vars.DVSA_AWS_REGION }} #Change to reflect your Region
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID_SHAREDCOREECR }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     permissions:
@@ -31,7 +31,8 @@ jobs:
           repoName=$(echo "$results" | jq -r '.repoName')
           dockerFile=$(echo "$results" | jq -r '.dockerFile') 
           if [ "$build" == "true" ]; then
-            docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerFile
+            #docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerFile
+             docker run --rm -i hadolint/hadolint < build/$repoName/$dockerFile
           else
             echo "Not linting - $repoName, build parameter equal to false"
           fi
@@ -42,7 +43,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
-        aws-region: ${{vars.DVSA_AWS_REGION}}
+        aws-region: $AWS_REGION
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
       #failfast - credential configuration only to detect failure on PR
@@ -60,7 +61,24 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        bash scripts/docker-build.sh
+        SHA=$(git rev-parse --short HEAD)
+
+        # Iterate over JSON objects in build.json
+        jq -c '.[]' build.json | while read -r results; do
+        
+            repoName=$(echo "$results" | jq -r '.repoName') 
+            dockerFile=$(echo "$results" | jq -r '.dockerFile') 
+            tag=$(echo "$results" | jq -r '.tag') 
+            build=$(echo "$results" | jq -r '.build')
+        
+            if [ "$build" == "true" ]; then
+                echo "Building $repoName ..."
+                buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA"
+                docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
+            else
+                echo "Not building - $repoName, build parameter equal to false"
+            fi
+        done
 
       
     - name: snyk scan api image
