@@ -32,7 +32,7 @@ jobs:
           dockerFile=$(echo "$results" | jq -r '.dockerFile') 
           if [ "$build" == "true" ]; then
             #docker run --rm --privileged -v `pwd`:/root/ projectatomic/dockerfile-lint dockerfile_lint -f build/$repoName/$dockerFile
-             docker run --rm -i hadolint/hadolint < build/$repoName/$dockerFile
+             docker run --rm -i hadolint/hadolint hadolint -t error - < build/$repoName/$dockerFile
           else
             echo "Not linting - $repoName, build parameter equal to false"
           fi
