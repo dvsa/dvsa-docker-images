@@ -28,17 +28,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set IMAGE_TAG
-      run: | 
-        IMAGE_SHA=$(echo $GITHUB_SHA | cut -c 1-6)
-        echo "IMAGE_TAG=vol-php-fpm-7.4.0-alpine-fpm-$IMAGE_SHA" >> $GITHUB_ENV
   
     - name: setup Notation CLI
       uses: notaryproject/notation-action/setup@v1
       with:
         version: "1.0.0"
 
-
+      # download the required plugin for notary
     - name: Set up Notation CLI
       run: |
         wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
@@ -46,7 +42,7 @@ jobs:
         notation version
         notation plugin ls
       
-    - name: Configure AWS credentials from Test account
+    - name: Configure AWS credentials Shared core ECR
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
@@ -63,7 +59,6 @@ jobs:
     - name: Build the Docker image
       run: |
         bash scripts/docker-build.sh
-        #docker build -t ${{ secrets.ECR_BASE_URL }}:$IMAGE_TAG -f dockerfile . 
 
     - name: Push docker base image
       id: push-images

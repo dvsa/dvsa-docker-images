@@ -37,7 +37,7 @@ jobs:
           fi
         done
         
-
+      #falfast - credential configuration only to detect failure on PR
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -45,12 +45,14 @@ jobs:
         aws-region: ${{vars.DVSA_AWS_REGION}}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
+      #failfast - credential configuration only to detect failure on PR
     - name: Login to Shared Core ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@v2
       with:
         mask-password: 'true'
-
+      
+      #Action can not be used, no good way to loop through action on Github yet
     - name: Install snyk cli
       run: |
         npm install -g snyk
@@ -78,7 +80,7 @@ jobs:
                   echo "Not scanning - $repoName, build parameter equal to false"
               fi
           done
-      continue-on-error: true
+      continue-on-error: true # critical vulnerability found fix and remove this tag
           
        
   
