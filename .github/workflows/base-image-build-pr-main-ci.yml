@@ -2,7 +2,7 @@ name: Test, lint and build PHP base Image on Shared Core ECR
 run-name: Test, lint and build PHP base Image on Shared Core ECR
 
 on:
-  pull_request:
+  push:
     branches:
     - main
 
