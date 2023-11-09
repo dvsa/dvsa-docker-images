@@ -2,7 +2,6 @@ name: Build, sign and push PHP base Image on Shared Core ECR
 run-name: Test, sign and push PHP base Image on Shared Core ECR
 
 on:
-  pull_request:
   push:
     branches: 
     - main
