@@ -17,7 +17,7 @@ The images will be used by all the base images used in the project. The github r
 
 ###FAQ:
 - How do I build another image in this repo ?
-    Create a folder under build foder and name it with your repo name, place you place the dockerfile and other artifiacts required for building the image
+    Create a folder under build folder and name it with your repo name, place the dockerfile and other artifiacts required for building the image
     update the build.json file as follows :
     ```
     [
