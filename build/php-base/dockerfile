@@ -55,6 +55,8 @@ RUN echo 'extension=apc' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini &&
     # Set session.save_path for default \
     sed -i "s#.*session.save_path = .*#session.save_path = \"tcp://redis:6379\"#" /usr/local/etc/php/php.ini-production && \
     echo 'php_value[session.save_handler] = redis' >> /usr/local/etc/php-fpm.d/www.conf && \
-    echo 'php_value[session.save_path] = "tcp://redis:6379"' >> /usr/local/etc/php-fpm.d/www.conf
+    echo 'php_value[session.save_path] = "tcp://redis:6379"' >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo 'upload_tmp_dir = /var/tmp/nginx' >> /usr/local/etc/php/conf.d/docker-php-ext-upload.ini && \
+    echo 'upload_max_filesize = 5M' >> /usr/local/etc/php/conf.d/docker-php-ext-upload.ini
 
 
