@@ -1,0 +1,115 @@
+name: Build, sign and push PHP base Image on Shared Core ECR
+run-name: Test, sign and push PHP base Image on Shared Core ECR
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+
+  # notation_setup:
+  #   uses: ./.github/workflows/notation-setup-action.yaml
+
+  php-base-image-push:
+
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION : ${{ vars.DVSA_AWS_REGION }} #Change to reflect your Region
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID_SHAREDCOREECR }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+
+    steps:
+    - uses: actions/checkout@v3
+
+ 
+    - name: setup Notation CLI
+      uses: notaryproject/notation-action/setup@v1
+      with:
+        version: "1.0.0"
+
+      # download the required plugin for notary # llok into the ways to do it via action
+    - name: Set up Notation CLI
+      run: |
+        wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
+        sudo dpkg -i aws-signer-notation-cli_amd64.deb
+        notation version
+        notation plugin ls
+     
+    - name: Configure AWS credentials Shared core ECR
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume:  ${{ secrets.DEV_AWS_ROLE }}
+        aws-region: ${{ vars.DVSA_AWS_REGION }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+
+    - name: Login to Shared Core ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        mask-password: 'true'
+       
+
+    - name: Build the Docker image
+      run: |
+        SHA=$(git rev-parse --short HEAD)
+
+        # Iterate over JSON objects in build.json
+        jq -c '.[]' build.json | while read -r results; do
+       
+            repoName=$(echo "$results" | jq -r '.repoName')
+            dockerFile=$(echo "$results" | jq -r '.dockerFile')
+            tag=$(echo "$results" | jq -r '.tag')
+            build=$(echo "$results" | jq -r '.build')
+       
+            if [ "$build" == "true" ]; then
+                echo "Building $repoName ..."
+                buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA"
+                docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
+            else
+                echo "Not building - $repoName, build parameter equal to false"
+            fi
+        done
+
+    - name: Push docker base image
+      id: push-images
+      run: |
+          SHA=$(git rev-parse --short HEAD)
+
+          # Iterate over JSON objects in build.json
+          jq -c '.[]' build.json | while read -r results; do
+         
+              repoName=$(echo "$results" | jq -r '.repoName')
+              tag=$(echo "$results" | jq -r '.tag')
+              build=$(echo "$results" | jq -r '.build')
+  
+              if [ "$build" == "true" ]; then
+                  echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
+                  docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
+              else
+                  echo "Not pushing - $repoName, build parameter equal to false"
+              fi
+          done
+   
+    #ACTIONS - look into docker trust with aws signer
+    - name: Sign base images
+      run: |
+          SHA=$(git rev-parse --short HEAD)
+          jq -c '.[]' build.json | while read -r results; do
+            build=$(echo "$results" | jq -r '.build')
+            repoName=$(echo "$results" | jq -r '.repoName')
+            dockerFile=$(echo "$results" | jq -r '.dockerFile')
+            tag=$(echo "$results" | jq -r '.tag')
+
+            if [ "$build" == "true" ]; then
+              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DVSA_AWS_SHAREDCORECR_IMAGE_SIGNING_PROFILE }}"
+            else
+              echo "Not linting - $repoName, build parameter equal to false"
+            fi
+          done
+       
