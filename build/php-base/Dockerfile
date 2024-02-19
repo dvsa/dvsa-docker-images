@@ -1,60 +1,34 @@
-# Add metadata to the image
+FROM php:7.4.33-fpm-alpine3.16
 
-
-
-FROM php:7.4.33-fpm-alpine as production
-
-#php:7.4.0-fpm-alpine
-# php:8.0-fpm-alpine
-
-LABEL maintainer="shaun.hare@dvsa.gov.uk"
-LABEL description="PHP Alpine base image with dependency packages"
-LABEL Name="vol-php-fpm:7.4.33-alpine-fpm"
+LABEL maintainer="<vol-team>@dvsa.gov.uk"
+LABEL description="Alpine base image with PHP 7.4, nginx & Supervisord"
+LABEL Name="php:nginx-supervisord-fpm-7.4.33-alpine"
 LABEL Version="0.1"
 
-RUN apk add --no-cache \
-        bash \
-        autoconf \
-        g++ \
-        make \
-        git \
-        icu-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libzip-dev \
-        zlib-dev \
-        python3 \
-        py3-pip && \
-        pip3 install --upgrade awscli && rm -rf '/var/cache/apk/*' \
-    && docker-php-ext-install \
-        bcmath \
-        gd \
-        intl \
-        opcache \
-        pdo_mysql \
-        zip \
-        pdo_mysql \
-        intl 
+RUN apk add --no-cache supervisor nginx
 
+# Supervisor config
+COPY ./supervisord.conf /etc/supervisord.conf
 
-RUN pecl install apcu apcu_bc igbinary mcrypt stats-2.0.3
-RUN docker-php-ext-enable apcu igbinary mcrypt stats
+# Configure php-fpm configs
+COPY ./php-fpm/php-fpm.d/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./php-fpm/php-fpm.d/php-fpm.ini /usr/local/etc/php/php.ini
 
-RUN pecl install -D 'enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no"' redis
-RUN docker-php-ext-enable redis
+# Override nginx configs
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/conf.d/virtualserver.conf /etc/nginx/conf.d/virtualserver.conf
 
-# Tweak apcu extension settings\
-RUN echo 'extension=apc' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini && \
-    echo 'apc.enabled = 1' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini && \
-    echo 'apc.mmap_file_mask = /tmp/apc.XXXXXX' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini && \
-    # Tweak date settings
-    sed -i 's/;date.timezone =/date.timezone = "Europe\/London"/g' /usr/local/etc/php/php.ini-production && \
-    # Tweak igbinary extension settings
-    echo 'session.serialize_handler = igbinary' >> /usr/local/etc/php/conf.d/docker-php-ext-igbinary.ini && \
-    echo 'session.save_handler = redis' >> /usr/local/etc/php/php.ini-production && \
-    # Set session.save_path for default \
-    sed -i "s#.*session.save_path = .*#session.save_path = \"tcp://redis:6379\"#" /usr/local/etc/php/php.ini-production && \
-    echo 'php_value[session.save_handler] = redis' >> /usr/local/etc/php-fpm.d/www.conf && \
-    echo 'php_value[session.save_path] = "tcp://redis:6379"' >> /usr/local/etc/php-fpm.d/www.conf
+# Configure nginx configs
+COPY ./supervisord.conf /etc/supervisord.conf
 
+# Copy Script
+COPY ./start.sh /start.sh
 
+# Make script executable
+RUN chmod +x /start.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["/bin/sh"]
+
+CMD ["/start.sh"]

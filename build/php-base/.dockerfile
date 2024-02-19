@@ -1,0 +1,12 @@
+Dockerfile
+
+# Docs
+README*.md
+
+# Git
+.git/
+.github/
+buildx.sh
+
+# OSX
+.DS_Store
