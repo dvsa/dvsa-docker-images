@@ -64,4 +64,52 @@ jobs:
         
             repoName=$(echo "$results" | jq -r '.repoName') 
             dockerFile=$(echo "$results" | jq -r '.dockerFile') 
-            t
+            tag=$(echo "$results" | jq -r '.tag') 
+            build=$(echo "$results" | jq -r '.build')
+        
+            if [ "$build" == "true" ]; then
+                echo "Building $repoName ..."
+                buildTag="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA"
+                docker build -t "$buildTag" --file "./build/$repoName/$dockerFile" build/.
+            else
+                echo "Not building - $repoName, build parameter equal to false"
+            fi
+        done
+
+    - name: Push docker base image
+      id: push-images
+      run: |
+          SHA=$(git rev-parse --short HEAD)
+
+          # Iterate over JSON objects in build.json
+          jq -c '.[]' build.json | while read -r results; do
+          
+              repoName=$(echo "$results" | jq -r '.repoName') 
+              tag=$(echo "$results" | jq -r '.tag') 
+              build=$(echo "$results" | jq -r '.build')
+   
+              if [ "$build" == "true" ]; then
+                  echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
+                  docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA
+              else
+                  echo "Not pushing - $repoName, build parameter equal to false"
+              fi
+          done
+    
+    #ACTIONS - look into docker trust with aws signer
+    - name: Sign base images
+      run: |
+          SHA=$(git rev-parse --short HEAD)
+          jq -c '.[]' build.json | while read -r results; do
+            build=$(echo "$results" | jq -r '.build')
+            repoName=$(echo "$results" | jq -r '.repoName')
+            dockerFile=$(echo "$results" | jq -r '.dockerFile')
+            tag=$(echo "$results" | jq -r '.tag') 
+
+            if [ "$build" == "true" ]; then
+              notation sign $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$repoName:$tag-$SHA --plugin "com.amazonaws.signer.notation.plugin" --id "${{ secrets.DVSA_AWS_SHAREDCORECR_IMAGE_SIGNING_PROFILE }}" 
+            else
+              echo "Not linting - $repoName, build parameter equal to false"
+            fi
+          done
+        
