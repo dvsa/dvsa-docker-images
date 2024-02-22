@@ -1,8 +1,0 @@
-[
-    {
-        "repoName": "php-base",
-        "dockerFile": "Dockerfile",
-        "tag": "7.4.33-fpm-alpine-base",
-        "build": true
-    }
-]
