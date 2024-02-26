@@ -15,9 +15,6 @@ COPY ./php-fpm/php-fpm.d/php-fpm.ini /usr/local/etc/php/php.ini
 COPY ./nginx.conf /etc/nginx/nginx.conf
 # COPY ./nginx/conf.d/virtualserver.conf /etc/nginx/conf.d/virtualserver.conf
 
-# Configure nginx and PHP configuration for supervisord
-COPY ./supervisord.conf /etc/supervisord.conf
-
 # Grant access of relevant directories to user `www-data`
 RUN chmod 747 /var/log/ -R && \
     chmod 747 /run/ -R && \
