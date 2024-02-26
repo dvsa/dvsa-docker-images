@@ -1,7 +1,7 @@
 # Base image configuration for PHP 7.4
 FROM php:7.4.33-fpm-alpine3.16
 
-# Installing supervisor and NGINX 
+# Installing supervisor and NGINX
 RUN apk add --no-cache supervisor nginx
 
 # Supervisor config
@@ -18,11 +18,20 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 # Configure nginx and PHP configuration for supervisord
 COPY ./supervisord.conf /etc/supervisord.conf
 
+# Grant access of relevant directories to user `www-data`
+RUN chmod 747 /var/log/ -R && \
+    chmod 747 /run/ -R && \
+    chmod 747 /var/lib/ -R && \
+    chmod 747 /usr/bin/ -R
+
+# Non-root user in docker
+USER www-data
+
 # Expose port 80 for nginx
 EXPOSE 80
 
 # Default command executed during container startup
-ENTRYPOINT ["/bin/sh"]
+ENTRYPOINT ["supervisord"]
 
 # Default startup command when container is launched
-CMD ["supervisord", "-c", "/etc/supervisord.conf", "-n"]
+CMD ["-c", "/etc/supervisord.conf", "-n"]
