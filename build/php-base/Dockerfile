@@ -16,10 +16,10 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 # COPY ./nginx/conf.d/virtualserver.conf /etc/nginx/conf.d/virtualserver.conf
 
 # Grant access of relevant directories to user `www-data`
-RUN chmod 747 /var/log/ -R && \
-    chmod 747 /run/ -R && \
-    chmod 747 /var/lib/ -R && \
-    chmod 747 /usr/bin/ -R
+RUN chmod 747 /var/log/ \
+              /run/ \
+              /var/lib/ \
+              /usr/bin/ -R
 
 # Non-root user in docker
 USER www-data
