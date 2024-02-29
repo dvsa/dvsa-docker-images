@@ -13,7 +13,7 @@ RUN apk add --no-cache supervisor nginx && \
 COPY ./supervisord.conf /etc/supervisord.conf
 
 # Configure php-fpm configs
-COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 COPY ./00-php.ini ${PHP_INI_DIR}/conf.d/00-php.ini
 
 # Override nginx configs
@@ -26,4 +26,4 @@ USER www-data
 EXPOSE 80
 
 # Default startup command when container is launched
-CMD ["supervisord", "-c", "/etc/supervisord.conf", "-n"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
