@@ -1,0 +1,77 @@
+##
+ # Copyright © Amazon.com and Affiliates: This deliverable is considered Developed Content as defined in the AWS Service Terms and the SOW between the parties dated 2024-01-16.
+##
+
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+
+  orchestrator:
+    name: Orchestrator
+    runs-on: ubuntu-latest
+    outputs:
+      should-build-docker: ${{ steps.changed-php-7-4-fpm-nginx-docker-files.outputs.any_changed == 'true' || null }}
+      should-build-php-7-4-fpm-nginx-docker: ${{ steps.changed-php-7-4-fpm-nginx-docker-files.outputs.any_changed == 'true' || null }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v42
+        id: changed-php-7-4-fpm-nginx-docker-files
+        with:
+          files: |
+            php/7.4/fpm-nginx/**
+          # since_last_remote_commit: true
+
+  get-version:
+    name: Get latest version
+    needs:
+      - orchestrator
+    runs-on: ubuntu-latest
+    outputs:
+      php-7.4-fpm-nginx: ${{ steps.php-7-4-nginx-fpm.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - id: php-7-4-nginx-fpm
+        uses: ./.github/actions/get-version
+        with:
+          docker-image-prefix: php:7.4-fpm-nginx # {ecrRepoName}:{imagePrefix}
+          docker-image-path: php/7.4/fpm-nginx
+
+      - name: Add to summary
+        run: |
+          echo "#### Base docker images versions:" >> $GITHUB_STEP_SUMMARY
+          echo "**Php7.4FpmNginx**: \`${{ steps.php-7-4-nginx-fpm.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+
+  docker:
+    name: Docker
+    needs:
+      - orchestrator
+      - get-version
+    if: ${{ always() && !cancelled() && !failure() && needs.orchestrator.outputs.should-build-docker }}
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile-directory:
+          - php/7.4/fpm-nginx
+        project:
+          - php-7.4-fpm-nginx
+    uses: ./.github/workflows/docker.yaml
+    with:
+      artifact-name: ${{ needs.get-version.outputs[matrix.project] }}
+      dockerfile-directory: ${{ matrix.dockerfile-directory }}
+      project: ${{ matrix.project }}
+      should-upload-artifact-to-ecr: false
+    permissions:
+      contents: read
+      id-token: write

@@ -1,0 +1,55 @@
+##
+ # Copyright © Amazon.com and Affiliates: This deliverable is considered Developed Content as defined in the AWS Service Terms and the SOW between the parties dated 2024-01-16.
+##
+
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+
+  orchestrator:
+    name: Orchestrator
+    runs-on: ubuntu-latest
+    outputs:
+      should-build-docker: ${{ steps.changed-nginx-php-fpm-7-4-docker-files.outputs.any_changed == 'true' || null }}
+      should-build-nginx-php-fpm-7-4-docker: ${{ steps.changed-nginx-php-fpm-7-4-docker-files.outputs.any_changed == 'true' || null }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v42
+        id: changed-nginx-php-fpm-7-4-docker-files
+        with:
+          files: |
+            php/7.4/fpm-nginx/**
+          # since_last_remote_commit: true
+
+  docker:
+    name: Docker
+    needs:
+      - orchestrator
+    if: ${{ always() && !cancelled() && !failure() && needs.orchestrator.outputs.should-build-docker }}
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - php/7.4/fpm-nginx
+        artifact-name:
+          - 7.4-fpm-nginx        
+        exclude:
+          - project: ${{ needs.orchestrator.outputs.should-build-nginx-php-fpm-7-4-docker && 'ignored' || 'nginx-php-fpm-7.4' }}
+    uses: ./.github/workflows/docker.yaml
+    with:
+      project: ${{ matrix.project }}
+      artifact-name: ${{ matrix.artifact-name }}
+      should-upload-artifact-to-ecr: true
+    permissions:
+      contents: read
+      id-token: write
