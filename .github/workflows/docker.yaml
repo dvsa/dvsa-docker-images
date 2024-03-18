@@ -80,6 +80,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.ECR_REGISTRY }}/php
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+          # tags: |
+          #   type=sha,format=short
+          #   type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.version }}
+          #   type=raw,enable=${{ !inputs.is-release }},value=rc-${{ inputs.version }}
+
+
       - name: Configure AWS credentials
         if: ${{ inputs.should-upload-artifact-to-ecr }}
         uses: aws-actions/configure-aws-credentials@v4
@@ -94,7 +112,15 @@ jobs:
           context: "{{defaultContext}}:${{ env.WORKING_DIR }}"
           platforms: linux/amd64,linux/arm64
           push: ${{ inputs.should-upload-artifact-to-ecr }}
-          tags: ${{ env.ECR_REGISTRY }}/${{ inputs.artifact-name }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        # with:
+        #   context: "{{defaultContext}}:${{ env.WORKING_DIR }}"
+        #   platforms: linux/amd64,linux/arm64
+        #   push: ${{ inputs.should-upload-artifact-to-ecr }}
+        #   tags: ${{ env.ECR_REGISTRY }}/${{ inputs.artifact-name }}
 
       - name: Login to ECR
         if: ${{ inputs.should-upload-artifact-to-ecr }}
