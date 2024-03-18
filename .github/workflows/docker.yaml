@@ -87,10 +87,19 @@ jobs:
           images: |
             ${{ env.ECR_REGISTRY }}/php
           tags: |
+            type=schedule
             type=ref,event=branch
+            type=ref,event=tag
             type=ref,event=pr
+            type=semver,pattern={{raw}}
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=sha
+          # tags: |
+          #   type=ref,event=branch
+          #   type=ref,event=pr
+          #   type=semver,pattern={{version}}
+          #   type=semver,pattern={{major}}.{{minor}}
 
           # tags: |
           #   type=sha,format=short
