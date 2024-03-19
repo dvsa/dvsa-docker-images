@@ -1,7 +1,3 @@
-##
- # Copyright © Amazon.com and Affiliates: This deliverable is considered Developed Content as defined in the AWS Service Terms and the SOW between the parties dated 2024-01-16.
-##
-
 # Base image configuration for PHP 7.4.33
 FROM php:7.4-fpm-alpine3.16
 
