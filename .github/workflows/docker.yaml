@@ -95,7 +95,7 @@ jobs:
             ${{ env.ECR_REGISTRY }}/php
           tags: |
             type=sha,format=short
-            type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.version }}
+            type=semver,enable=${{ inputs.is-release }},value=${{ inputs.version }}
             type=raw,enable=${{ !inputs.is-release }},value=rc-${{ inputs.version }}
 
       - name: Configure AWS credentials
