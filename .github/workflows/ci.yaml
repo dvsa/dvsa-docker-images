@@ -67,6 +67,7 @@ jobs:
       dockerfile-directory: ${{ matrix.dockerfile-directory }}
       project: ${{ matrix.project }}
       should-upload-artifact-to-ecr: false
+      version: ${{ needs.get-version.outputs[matrix.project] }}
     permissions:
       contents: read
       id-token: write

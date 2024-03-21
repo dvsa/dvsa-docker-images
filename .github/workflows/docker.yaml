@@ -19,6 +19,9 @@ on:
         type: boolean
         required: true
         default: false
+      version:
+        type: string
+        required: true
 
 env:
   WORKING_DIR: ${{ inputs.dockerfile-directory }}
@@ -87,25 +90,24 @@ jobs:
           images: |
             ${{ env.ECR_REGISTRY }}/php
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=semver,pattern={{raw}}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-            type=sha
+            type=sha,format=short
+            type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.version }}
+            type=raw,enable=${{ !inputs.is-release }},value=rc-${{ inputs.version }}
+
+          # tags: |
+          #   type=schedule
+          #   type=ref,event=branch
+          #   type=ref,event=tag
+          #   type=ref,event=pr
+          #   type=semver,pattern={{raw}}
+          #   type=semver,pattern={{version}}
+          #   type=semver,pattern={{major}}.{{minor}}.{{patch}}
+          #   type=sha
           # tags: |
           #   type=ref,event=branch
           #   type=ref,event=pr
           #   type=semver,pattern={{version}}
           #   type=semver,pattern={{major}}.{{minor}}
-
-          # tags: |
-          #   type=sha,format=short
-          #   type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.version }}
-          #   type=raw,enable=${{ !inputs.is-release }},value=rc-${{ inputs.version }}
-
 
       - name: Configure AWS credentials
         if: ${{ inputs.should-upload-artifact-to-ecr }}
