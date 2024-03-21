@@ -1,6 +1,8 @@
 # Base image configuration for PHP 7.4.33
 FROM php:7.4-fpm-alpine3.16
 
+LABEL version=v1.0.0
+
 # Installing supervisor and NGINX
 # Grant access of relevant directories to user `www-data`
 RUN apk add --no-cache supervisor=4.2.4-r0 nginx=1.22.1-r1 && \

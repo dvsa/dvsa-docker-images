@@ -1,20 +1,9 @@
-##
- # Copyright © Amazon.com and Affiliates: This deliverable is considered Developed Content as defined in the AWS Service Terms and the SOW between the parties dated 2024-01-16.
-##
-
-name: Get image version in format {ecrRepoName}:{imagePrefix}-{gitCommitHash}
+name: Get image version in format v{major}.{minor}.{patch}
 
 inputs:
-  docker-image-prefix:
-    description: Prefix to be appended with version {ecrRepoName}:{imagePrefix}
-    required: true
   docker-image-path:
     description: The root of the base image Dockerfile
     required: true
-  ref:
-    description: The commit reference to use as a starting point for the version
-    required: true
-    default: "HEAD"
 
 outputs:
   version:
@@ -27,4 +16,4 @@ runs:
     - id: get-version
       shell: bash
       run: |
-        echo "version=${{ inputs.docker-image-prefix }}-$(git rev-list -1 --abbrev-commit ${{ inputs.ref }} -- ${{ inputs.docker-image-path }})" >> $GITHUB_OUTPUT
+        echo `grep -o 'version=.*' ${{ inputs.docker-image-path }}/Dockerfile` >> $GITHUB_OUTPUT
