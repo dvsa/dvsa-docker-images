@@ -22,6 +22,10 @@ on:
       version:
         type: string
         required: true
+      is-release:
+        type: boolean
+        required: false
+        default: false
 
 env:
   WORKING_DIR: ${{ inputs.dockerfile-directory }}
