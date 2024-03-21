@@ -98,21 +98,6 @@ jobs:
             type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.version }}
             type=raw,enable=${{ !inputs.is-release }},value=rc-${{ inputs.version }}
 
-          # tags: |
-          #   type=schedule
-          #   type=ref,event=branch
-          #   type=ref,event=tag
-          #   type=ref,event=pr
-          #   type=semver,pattern={{raw}}
-          #   type=semver,pattern={{version}}
-          #   type=semver,pattern={{major}}.{{minor}}.{{patch}}
-          #   type=sha
-          # tags: |
-          #   type=ref,event=branch
-          #   type=ref,event=pr
-          #   type=semver,pattern={{version}}
-          #   type=semver,pattern={{major}}.{{minor}}
-
       - name: Configure AWS credentials
         if: ${{ inputs.should-upload-artifact-to-ecr }}
         uses: aws-actions/configure-aws-credentials@v4
@@ -131,11 +116,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-        # with:
-        #   context: "{{defaultContext}}:${{ env.WORKING_DIR }}"
-        #   platforms: linux/amd64,linux/arm64
-        #   push: ${{ inputs.should-upload-artifact-to-ecr }}
-        #   tags: ${{ env.ECR_REGISTRY }}/${{ inputs.artifact-name }}
 
       - name: Login to ECR
         if: ${{ inputs.should-upload-artifact-to-ecr }}
