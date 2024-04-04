@@ -1,4 +1,3 @@
-# Base image configuration for PHP 7.4.33
 FROM php:7.4-fpm-alpine3.16
 
 # Add supervisord
@@ -19,5 +18,4 @@ COPY www.conf /usr/local/etc/php-fpm.conf
 
 EXPOSE 80
 
-# Default startup command when container is launched
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
