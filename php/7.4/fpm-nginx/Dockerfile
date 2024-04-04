@@ -11,10 +11,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Configure PHP
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
-COPY php.ini ${PHP_INI_DIR}/conf.d/999-dvsa-base.ini
+COPY php.ini ${PHP_INI_DIR}/conf.d/000-dvsa-base.ini
 
 # Configure PHP-FPM
-COPY www.conf /usr/local/etc/php-fpm.conf
+COPY www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
 EXPOSE 80
 
