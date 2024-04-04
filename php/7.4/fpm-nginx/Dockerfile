@@ -13,7 +13,7 @@ RUN apk add --no-cache supervisor nginx && \
 COPY ./supervisord.conf /etc/supervisord.conf
 
 # Configure php-fpm configs
-COPY ./zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+COPY ./www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 COPY ./php.ini ${PHP_INI_DIR}/conf.d/999-base-php.ini
 
 # Override nginx configs
