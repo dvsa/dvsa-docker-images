@@ -1,23 +1,21 @@
 # Base image configuration for PHP 7.4.33
 FROM php:7.4-fpm-alpine3.16
 
-# Configure PHP
-COPY ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
-COPY php.ini ${PHP_INI_DIR}/conf.d/999-dvsa-base.ini
-
-# Configure PHP-FPM
-COPY www.conf /usr/local/etc/php-fpm.conf
+# Add supervisord
+RUN apk add --no-cache supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Add nginx
 RUN apk add --no-cache nginx \
     && chown -R www-data:www-data /run /var/lib/nginx /var/log/nginx
-
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Add supervisord
-RUN apk add --no-cache supervisor
+# Configure PHP
+RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
+COPY php.ini ${PHP_INI_DIR}/conf.d/999-dvsa-base.ini
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Configure PHP-FPM
+COPY www.conf /usr/local/etc/php-fpm.conf
 
 EXPOSE 80
 
