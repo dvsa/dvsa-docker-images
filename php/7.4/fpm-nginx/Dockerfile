@@ -14,7 +14,7 @@ COPY ./supervisord.conf /etc/supervisord.conf
 
 # Configure php-fpm configs
 COPY ./zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
-COPY ./00-php.ini ${PHP_INI_DIR}/conf.d/00-php.ini
+COPY ./php.ini ${PHP_INI_DIR}/conf.d/999-base-php.ini
 
 # Override nginx configs
 COPY ./nginx.conf /etc/nginx/nginx.conf
