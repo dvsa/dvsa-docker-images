@@ -32,7 +32,9 @@ jobs:
     needs:
       - release-please
     outputs:
-      changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
+      any-changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
+      should-build-php-7.4-fpm-nginx: ${{ contains(steps.changed-directories.outputs.all_changed_files, 'php/7.4/fpm-nginx') || null }}
+      should-build-php-8.0-fpm-nginx: ${{ contains(steps.changed-directories.outputs.all_changed_files, 'php/8.0/fpm-nginx') || null }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +46,7 @@ jobs:
 
   docker:
     name: Docker
-    if: ${{ needs.orchestrator.outputs.changed-directories }}
+    if: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs.any-changed-directories }}
     concurrency:
       group: docker-${{ matrix.base }}
     needs:
@@ -57,11 +59,11 @@ jobs:
           - php/7.4/fpm-nginx
           - php/8.0/fpm-nginx
         exclude:
-          - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/7.4/fpm-nginx') && 'ignored' || 'php/7.4/fpm-nginx' }}
-          - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/fpm-nginx') && 'ignored' || 'php/8.0/fpm-nginx' }}
+          - base: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs['should-build-php-7.4-fpm-nginx'] && 'ignored' || 'php/7.4/fpm-nginx' }}
+          - base: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs['should-build-php-8.0-fpm-nginx'] && 'ignored' || 'php/8.0/fpm-nginx' }}
     uses: ./.github/workflows/docker.yaml
     with:
-      version: ${{ needs.release-please.outputs.tag_name }}
+      version: ${{ needs.release-please.outputs.release_created && needs.release-please.outputs.tag_name || github.sha}}
       local-path: ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
