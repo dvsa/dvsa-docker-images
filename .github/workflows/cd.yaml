@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - add-ci-cd-workflows
 
 permissions:
   contents: read
@@ -63,6 +64,7 @@ jobs:
       version: ${{ needs.release-please.outputs.tag_name }}
       local-path: ${{ matrix.base }}
       repository: ${{ matrix.base }}
+      push: true
     permissions:
       contents: read
       id-token: write
