@@ -16,12 +16,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    strategy:
-      fail-fast: false
-      matrix:
-        base:
-          - php/7.4/fpm-nginx
-          - php/8.0/fpm-nginx
     outputs:
       tag_name: ${{ steps.release.outputs.tag_name }}
       release_created: ${{ steps.release.outputs.release_created }}
@@ -31,7 +25,6 @@ jobs:
         with:
           release-type: simple
           target-branch: ${{ github.ref_name }}
-          path: ${{ matrix.base }}
 
   orchestrator:
     name: Orchestrator
