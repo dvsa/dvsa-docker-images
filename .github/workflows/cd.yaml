@@ -42,7 +42,6 @@ jobs:
       - uses: tj-actions/changed-files@v44
         id: changed-directories
         with:
-          files: "/**"
           files_ignore: ".github"
           dir_names: true
 

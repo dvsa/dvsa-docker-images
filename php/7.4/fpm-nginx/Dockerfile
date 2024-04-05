@@ -19,5 +19,3 @@ COPY www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 EXPOSE 80
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# Trigger CI.
