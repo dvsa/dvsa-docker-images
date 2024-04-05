@@ -27,8 +27,8 @@ env:
   AWS_REGION: eu-west-1
 
 jobs:
-  lint:
-    name: Lint
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,15 +39,6 @@ jobs:
       - uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ${{ inputs.local-path }}/Dockerfile
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || null }}
-          sparse-checkout: ${{ inputs.local-path }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
