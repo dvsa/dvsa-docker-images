@@ -32,9 +32,11 @@ jobs:
       fail-fast: false
       matrix:
         base:
-          - php-74
+          - php/7.4/fpm-nginx
+          - php/8.0/fpm-nginx
         exclude:
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php-74') && 'ignored' || 'php-74' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/7.4/fpm-nginx') && 'ignored' || 'php/7.4/fpm-nginx' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/fpm-nginx') && 'ignored' || 'php/8.0/fpm-nginx' }}
     uses: ./.github/workflows/docker.yaml
     with:
       version: ${{ github.event.pull_request.head.sha }}
