@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  orchestrator:
+    name: Orchestrator
+    runs-on: ubuntu-latest
+    outputs:
+      changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v44
+        id: changed-directories
+        with:
+          dir_names: true
+
+  docker:
+    name: Docker
+    if: ${{ needs.orchestrator.outputs.changed-directories }}
+    concurrency:
+      group: docker-${{ matrix.base }}
+    needs:
+      - orchestrator
+    strategy:
+      fail-fast: false
+      matrix:
+        base:
+          - php-74
+        exclude:
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php-74') && 'ignored' || 'php-74' }}
+    uses: ./.github/workflows/docker.yaml
+    with:
+      version: ${{ github.event.pull_request.head.sha }}
+      local-path: ${{ matrix.base }}
+      repository: ${{ matrix.base }}
+    permissions:
+      contents: read
+      id-token: write
