@@ -18,4 +18,5 @@ COPY www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
 EXPOSE 80
 
+USER www-data
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
