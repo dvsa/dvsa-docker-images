@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - push-images-to-GHCR
 
 permissions:
   contents: read
