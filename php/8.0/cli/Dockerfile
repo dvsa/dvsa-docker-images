@@ -7,4 +7,3 @@ COPY php.ini ${PHP_INI_DIR}/conf.d/000-dvsa-base.ini
 EXPOSE 80
 
 USER www-data
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
