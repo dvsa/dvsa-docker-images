@@ -50,7 +50,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.ECR_REGISTRY }}/${{ inputs.repository }}
             ${{ env.GHCR }}/${{ inputs.repository }}
           tags: |
             type=raw,value=latest
@@ -62,7 +61,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.ECR_REGISTRY }}/${{ inputs.repository }}
             ${{ env.GHCR }}/${{ inputs.repository }}
           tags: |
             type=raw,value=latest
