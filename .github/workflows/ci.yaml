@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  orchestrator:
+    name: Orchestrator
+    runs-on: ubuntu-latest
+    outputs:
+      changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v44
+        id: changed-directories
+        with:
+          files_ignore: |
+            .github/**
+            README.md
+            CHANGELOG.md
+            .editorconfig
+            .gitignore
+          dir_names: true
+
+  docker:
+    name: Docker
+    if: ${{ needs.orchestrator.outputs.changed-directories }}
+    needs:
+      - orchestrator
+    strategy:
+      fail-fast: false
+      matrix:
+        base:
+          - php/7.4/fpm-nginx
+          - php/8.0/fpm-nginx
+        exclude:
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/7.4/fpm-nginx') && 'ignored' || 'php/7.4/fpm-nginx' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/fpm-nginx') && 'ignored' || 'php/8.0/fpm-nginx' }}
+    uses: ./.github/workflows/docker.yaml
+    with:
+      version: ${{ github.event.pull_request.head.sha }}
+      local-path: ${{ matrix.base }}
+      repository: ${{ matrix.base }}
+    permissions:
+      contents: read
+      id-token: write
