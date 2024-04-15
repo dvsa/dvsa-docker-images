@@ -51,7 +51,6 @@ jobs:
 
   docker:
     name: Docker
-    if: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs.changed-directories }}
     concurrency:
       group: docker-${{ matrix.base }}
     needs:
