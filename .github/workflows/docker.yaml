@@ -83,15 +83,15 @@ jobs:
 #        with:
 #          registry: ${{ env.ECR_REGISTRY }}
 
-      - name: Untag mutable tags
-        if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
-        env:
-          MUTABLE_TAGS: ${{ steps.mutable-meta.outputs.tags }}
-          REPOSITORY: ${{ inputs.repository }}
-        run: |
-          for tag in $MUTABLE_TAGS; do
-            aws ecr batch-delete-image --repository-name $REPOSITORY --image-ids imageTag=$tag
-          done
+#      - name: Untag mutable tags
+#        if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
+#        env:
+#          MUTABLE_TAGS: ${{ steps.mutable-meta.outputs.tags }}
+#          REPOSITORY: ${{ inputs.repository }}
+#        run: |
+#          for tag in $MUTABLE_TAGS; do
+#            aws ecr batch-delete-image --repository-name $REPOSITORY --image-ids imageTag=$tag
+#          done
 
       - name: Build ${{ inputs.push && 'and push ' || '' }}Docker image
         id: build-and-push
