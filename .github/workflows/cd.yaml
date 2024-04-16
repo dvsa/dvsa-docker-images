@@ -61,10 +61,12 @@ jobs:
         base:
           - php/7.4/fpm-nginx
           - php/8.0/fpm-nginx
+          - php/8.0/cli
           - php/8.2/fpm-nginx
         exclude:
           - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/7.4/fpm-nginx') && 'ignored' || 'php/7.4/fpm-nginx' }}
           - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/fpm-nginx') && 'ignored' || 'php/8.0/fpm-nginx' }}
+          - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/cli') && 'ignored' || 'php/8.2/cli' }}
           - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
     uses: ./.github/workflows/docker.yaml
     with:
