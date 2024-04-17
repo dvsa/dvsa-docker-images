@@ -72,7 +72,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
 
       - name: Extract mutable Docker metadata
-        # if: ${{ inputs.push }}
+        if: ${{ inputs.push }}
         id: mutable-meta
         uses: docker/metadata-action@v5
         with:
@@ -84,7 +84,7 @@ jobs:
             type=semver,enable=${{ inputs.is-release }},pattern={{major}},value=${{ inputs.version }}
 
       - name: Untag mutable tags
-        # if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
+        if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
         env:
           MUTABLE_TAGS: ${{ steps.mutable-meta.outputs.tags }}
           REPOSITORY: ${{ inputs.repository }}
@@ -95,7 +95,7 @@ jobs:
 
           for tag in $MUTABLE_TAGS_UNIQUE; do
             echo "Deleting tag $tag"
-            # aws ecr batch-delete-image --repository-name $REPOSITORY --image-ids imageTag=$tag
+            aws ecr batch-delete-image --repository-name $REPOSITORY --image-ids imageTag=$tag
           done
 
       - name: Log into registry ${{ env.REGISTRY_MIRROR }}
