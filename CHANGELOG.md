@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.1...v0.1.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* fix the CD workflow syntax ([#20](https://github.com/dvsa/dvsa-docker-images/issues/20)) ([8b6615c](https://github.com/dvsa/dvsa-docker-images/commit/8b6615cb48bd87f98f8b003fc7f6cc086a3c4a5f))
+
 ## [0.1.1](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.0...v0.1.1) (2024-04-18)
 
 
