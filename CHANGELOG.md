@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.0...v0.1.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* fix CD release workflow ([#17](https://github.com/dvsa/dvsa-docker-images/issues/17)) ([3b2333d](https://github.com/dvsa/dvsa-docker-images/commit/3b2333d26373eb6aabbf66dc9c65419d7fa23e06))
+
 ## 0.1.0 (2024-04-18)
 
 
