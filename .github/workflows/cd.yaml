@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix-release-issues-2
 
 permissions:
   contents: read
@@ -71,11 +70,11 @@ jobs:
           - base: ${{ needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
     uses: ./.github/workflows/docker.yaml
     with:
-      version: ${{ needs.release-please.outputs.release_created && needs.release-please.outputs.tag_name || github.sha}}
+      version: ${{ needs.release-please.outputs.release_created && needs.release-please.outputs.tag_name || github.sha }}
       local-path: ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
-      is-release: ${{ !!needs.release-please.outputs.release_created }}
+      is-release: ${{ needs.release-please.outputs.release_created == 'true' }}
     permissions:
       contents: read
       id-token: write
