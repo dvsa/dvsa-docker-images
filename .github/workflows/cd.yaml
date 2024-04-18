@@ -74,6 +74,7 @@ jobs:
       local-path: ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
+      is-release: ${{ needs.release-please.outputs.release_created }}
     permissions:
       contents: read
       id-token: write
