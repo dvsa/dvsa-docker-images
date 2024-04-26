@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.2...v0.2.0) (2024-04-26)
+
+
+### Features
+
+* add PHP 8.2/8.3 base images ([#22](https://github.com/dvsa/dvsa-docker-images/issues/22)) ([3f768ed](https://github.com/dvsa/dvsa-docker-images/commit/3f768edaa7e4786b625bca39a7a750d4baa92fde))
+
+
+### Bug Fixes
+
+* set `decorate_workers_output` to `no` ([#24](https://github.com/dvsa/dvsa-docker-images/issues/24)) ([a052aa3](https://github.com/dvsa/dvsa-docker-images/commit/a052aa311ac4dd323587b46c5ad403fb4a23c5a4))
+
 ## [0.1.2](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.1...v0.1.2) (2024-04-18)
 
 
