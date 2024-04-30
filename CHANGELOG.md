@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.2.0...v0.3.0) (2024-04-30)
+
+
+### Features
+
+* optimise Dockerfile and tweak logging levels ([#25](https://github.com/dvsa/dvsa-docker-images/issues/25)) ([928bc41](https://github.com/dvsa/dvsa-docker-images/commit/928bc41f256bcf5b7b544406e0ef6b5cf609f366))
+
 ## [0.2.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.1.2...v0.2.0) (2024-04-26)
 
 
