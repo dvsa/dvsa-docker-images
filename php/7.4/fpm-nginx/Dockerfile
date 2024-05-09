@@ -10,9 +10,6 @@ RUN apk add --no-cache nginx~=1 \
 # Copy the PHP production configuration.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
 
-# Copy the PHP production configuration.
-RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
-
 # Copy the configuration files.
 COPY nginx.conf /etc/nginx/nginx.conf
 
