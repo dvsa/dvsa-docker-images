@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.3.0...v0.4.0) (2024-05-09)
+
+
+### Features
+
+* refactor supervisord config to be extensible ([#27](https://github.com/dvsa/dvsa-docker-images/issues/27)) ([5f65792](https://github.com/dvsa/dvsa-docker-images/commit/5f657928996eae0e5e433b1b18213c889174eaa3))
+
 ## [0.3.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.2.0...v0.3.0) (2024-04-30)
 
 
