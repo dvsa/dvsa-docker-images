@@ -26,9 +26,13 @@ jobs:
         with:
           release-type: simple
           target-branch: ${{ github.ref_name }}
+      # `release-please` doesn't provide the tag_name output when the release is not created.
+      # The tag is needed for the docker image version on scheduled builds.
+      - uses: actions/checkout@v4
+        if: ${{ github.event_name == 'schedule'}}
+        with:
+          fetch-depth: 0
       - name: Get the latest tag name
-        # `release-please` doesn't provide the tag_name output when the release is not created.
-        # The tag is needed for the docker image version on scheduled builds.
         if: ${{ github.event_name == 'schedule'}}
         id: get-tag-name
         run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
