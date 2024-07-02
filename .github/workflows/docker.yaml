@@ -153,8 +153,10 @@ jobs:
         with:
           ref: ${{ inputs.ref || null }}
           sparse-checkout: ${{ inputs.dockerfile-directory }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build Docker image
         id: build-and-push
         uses: docker/build-push-action@v5
@@ -164,7 +166,15 @@ jobs:
           load: true
           tags: image-scan:latest
           cache-from: type=gha
+
       - name: Scan
         uses: aquasecurity/trivy-action@0.23.0
         with:
           image-ref: ${{ steps.build-and-push.outputs.imageid }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
