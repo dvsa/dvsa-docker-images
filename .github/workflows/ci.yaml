@@ -53,8 +53,8 @@ jobs:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
     uses: ./.github/workflows/docker.yaml
     with:
-      version: ${{ github.event.pull_request.head.sha }}
-      local-path: ${{ matrix.base }}
+      image-version: ${{ github.event.pull_request.head.sha }}
+      dockerfile-directory: ${{ matrix.base }}
       repository: ${{ matrix.base }}
     permissions:
       contents: read
