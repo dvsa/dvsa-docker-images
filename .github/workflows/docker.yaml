@@ -171,10 +171,10 @@ jobs:
         uses: aquasecurity/trivy-action@0.23.0
         with:
           image-ref: ${{ steps.build-and-push.outputs.imageid }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          # format: 'sarif'
+          # output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+      # - name: Upload Trivy scan results to GitHub Code Scanning
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
