@@ -98,3 +98,4 @@ jobs:
       contents: read
       id-token: write
       packages: write
+      security-events: write
