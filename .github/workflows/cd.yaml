@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: 0 * * * 2
+    - cron: "*/10 * * * *"
 
 permissions:
   contents: read
@@ -18,16 +18,20 @@ jobs:
       contents: write
       pull-requests: write
     outputs:
-      tag_name: ${{ steps.release.outputs.tag_name }}
       release_created: ${{ steps.release.outputs.release_created }}
-      major: ${{ steps.release.outputs.major }}
-      minor: ${{ steps.release.outputs.minor }}
+      tag_name: ${{ steps.get-tag-name.outputs.tag_name || steps.release.outputs.tag_name }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: simple
           target-branch: ${{ github.ref_name }}
+      - name: Get the latest tag name
+        # `release-please` doesn't provide the tag_name output when the release is not created.
+        # The tag is needed for the docker image version on scheduled builds.
+        if: ${{ github.event_name == 'schedule'}}
+        id: get-tag-name
+        run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
   orchestrator:
     name: Orchestrator
@@ -80,7 +84,7 @@ jobs:
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
     uses: ./.github/workflows/docker.yaml
     with:
-      image-version: ${{ github.event_name == 'schedule' && format('{0}.{1}', needs.release-please.outputs.major, needs.release-please.outputs.minor) || (needs.release-please.outputs.release_created && needs.release-please.outputs.tag_name || github.sha) }}
+      image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule') && needs.release-please.outputs.tag_name || github.sha }}
       dockerfile-directory:  ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
