@@ -58,11 +58,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          flavor: latest=true
           images: |
             ${{ env.REGISTRY }}/${{ inputs.repository }}
             ${{ env.REGISTRY_MIRROR }}/dvsa/dvsa-docker-images/${{ inputs.repository }}
           tags: |
-            type=raw,value=latest
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.image-version }}
@@ -85,10 +85,10 @@ jobs:
         id: mutable-meta
         uses: docker/metadata-action@v5
         with:
+          flavor: latest=true
           # Only required for ECR (the main registry) as the mirror registry (GHCR) doesn't support tag immutability.
           images: ${{ env.REGISTRY }}/${{ inputs.repository }}
           tags: |
-            type=raw,value=latest
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
 
