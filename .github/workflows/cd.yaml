@@ -20,6 +20,8 @@ jobs:
     outputs:
       tag_name: ${{ steps.release.outputs.tag_name }}
       release_created: ${{ steps.release.outputs.release_created }}
+      major: ${{ steps.release.outputs.major }}
+      minor: ${{ steps.release.outputs.minor }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -78,7 +80,7 @@ jobs:
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
     uses: ./.github/workflows/docker.yaml
     with:
-      image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule') && needs.release-please.outputs.tag_name || github.sha }}
+      image-version: ${{ github.event_name == 'schedule' && format('{0}.{1}', needs.release-please.outputs.major, needs.release-please.outputs.minor) || (needs.release-please.outputs.release_created && needs.release-please.outputs.tag_name || github.sha) }}
       dockerfile-directory:  ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
