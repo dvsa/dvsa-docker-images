@@ -58,7 +58,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          flavor: latest=true
+          flavor: latest=false
           images: |
             ${{ env.REGISTRY }}/${{ inputs.repository }}
             ${{ env.REGISTRY_MIRROR }}/dvsa/dvsa-docker-images/${{ inputs.repository }}
@@ -66,6 +66,7 @@ jobs:
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.image-version }}
+            type=raw,value=latest
 
       - name: Configure AWS credentials
         if: ${{ inputs.push }}
@@ -85,12 +86,12 @@ jobs:
         id: mutable-meta
         uses: docker/metadata-action@v5
         with:
-          flavor: latest=true
           # Only required for ECR (the main registry) as the mirror registry (GHCR) doesn't support tag immutability.
           images: ${{ env.REGISTRY }}/${{ inputs.repository }}
           tags: |
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
+            type=raw,value=latest
 
       - name: Untag mutable tags
         if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
