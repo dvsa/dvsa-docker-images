@@ -18,11 +18,11 @@ FROM ghcr.io/dvsa/dvsa-docker-images/php/8.3/fpm-nginx:0.4.0
 block-beta
     block:image
         columns 1
-        label["Project Image"]
-        linux["Linux Base Image (Alpine, Ubuntu, etc)"]
-        language["Language Base Image (Node, PHP, etc)"]
-        base["DVSA Base Image (php/8.3/fpm-nginx, php/8.3/cli, etc)"]
-        project["Project Image"]
+        label["Application"]
+        linux["Linux image (Alpine, Ubuntu, etc)"]
+        language["Language image (Node, PHP, etc)"]
+        base["DVSA image (php/8.3/fpm-nginx, php/8.3/cli, etc)"]
+        project["Project-specific Image"]
         style label fill:transparent,stroke:0,stroke-width:0
     end
 ```
