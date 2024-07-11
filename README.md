@@ -1,6 +1,36 @@
 # DVSA Images
 Docker Images for use in DVSA projects. The images are re-built weekly to pull in the latest patches and updates.
 
+## How to use
+
+<!-- `x-release-please-start-version` -->
+```dockerfile
+FROM ghcr.io/dvsa/dvsa-docker-images/php/8.3/fpm-nginx:0.4.0
+```
+<!-- `x-release-please-end` -->
+
+> [!TIP]  
+> Different specifity levels can be used to pin the image version. The most specific is the `git-sha` which is the most immutable. The least specific is `latest` which is the most mutable. See the [tagging strategy](#tagging-strategy) for more information.
+
+## Reccommended image hierarchy
+
+```mermaid
+---
+config:
+    theme: neutral
+---
+block-beta
+    block:image
+        columns 1
+        label["Project Image"]
+        linux["Linux Base Image (Alpine, Ubuntu, etc)"]
+        language["Language Base Image (Node, PHP, etc)"]
+        base["DVSA Base Image (php/8.3/fpm-nginx, php/8.3/cli, etc)"]
+        project["Project Image"]
+        style label fill:transparent,stroke:0,stroke-width:0
+    end
+```
+
 ## Tagging strategy
 
 The Docker images are tagged during the CD pipeline (running on `push` to `main` and on a `schedule`) with the following tags:
@@ -19,9 +49,11 @@ gitGraph
     commit id: "[git-sha10], latest"
 ```
 
-> [!WARNING]  
-> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`.  
+> [!WARNING]
+> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`. 
 > **Immutable tags**: `[major].[minor].[patch]`, & `[git-sha]`.
+>
+> Mutable tags are updated on `push` and `schedule`. `[git-sha]` are updated on every commit. `[major].[minor].[patch]` are updated on every release.
 
 ## Adding a new base image
 
