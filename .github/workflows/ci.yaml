@@ -21,10 +21,7 @@ jobs:
         with:
           files_ignore: |
             .github/**
-            README.md
-            CHANGELOG.md
-            .editorconfig
-            .gitignore
+            .
           dir_names: true
 
   docker:
