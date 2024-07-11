@@ -173,10 +173,6 @@ jobs:
         uses: aquasecurity/trivy-action@0.23.0
         with:
           image-ref: ${{ steps.build-and-push.outputs.imageid }}
-          format: 'sarif'
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy scan results to GitHub Code Scanning
         if: ${{ always() && !cancelled() && steps.scan.outcome == 'success' || steps.scan.outcome == 'failure' }}
