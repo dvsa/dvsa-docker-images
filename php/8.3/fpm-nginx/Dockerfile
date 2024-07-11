@@ -1,6 +1,6 @@
 FROM php:8.3-fpm-alpine3.19
 
-# Add supervisord.
+# Add supervisord. Test.
 RUN apk add --no-cache supervisor~=4
 
 # Add nginx.
