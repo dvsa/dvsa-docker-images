@@ -176,7 +176,6 @@ jobs:
           format: 'sarif'
           exit-code: '1'
           ignore-unfixed: true
-          vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy scan results to GitHub Code Scanning
