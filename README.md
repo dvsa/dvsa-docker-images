@@ -46,7 +46,7 @@ gitGraph
 ```
 
 > [!WARNING]
-> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`. 
+> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`.  
 > **Immutable tags**: `[major].[minor].[patch]`, & `[git-sha]`.
 >
 > Mutable tags are updated on `push` and `schedule`. `[git-sha]` are updated on every commit. `[major].[minor].[patch]` are updated on every release.
