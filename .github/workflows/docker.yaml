@@ -58,7 +58,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          flavor: latest=true
+          flavor: latest=false
           images: |
             ${{ env.REGISTRY }}/${{ inputs.repository }}
             ${{ env.REGISTRY_MIRROR }}/dvsa/dvsa-docker-images/${{ inputs.repository }}
@@ -66,6 +66,7 @@ jobs:
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release }},pattern={{version}},value=${{ inputs.image-version }}
+            type=raw,value=latest
 
       - name: Configure AWS credentials
         if: ${{ inputs.push }}
@@ -85,12 +86,12 @@ jobs:
         id: mutable-meta
         uses: docker/metadata-action@v5
         with:
-          flavor: latest=true
           # Only required for ECR (the main registry) as the mirror registry (GHCR) doesn't support tag immutability.
           images: ${{ env.REGISTRY }}/${{ inputs.repository }}
           tags: |
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}}.{{minor}},value=${{ inputs.image-version }}
             type=semver,enable=${{ inputs.is-release || inputs.is-schedule-release }},pattern={{major}},value=${{ inputs.image-version }}
+            type=raw,value=latest
 
       - name: Untag mutable tags
         if: ${{ inputs.push && steps.mutable-meta.outputs.tags }}
@@ -168,13 +169,18 @@ jobs:
           cache-from: type=gha
 
       - name: Scan
+        id: scan
         uses: aquasecurity/trivy-action@0.23.0
         with:
           image-ref: ${{ steps.build-and-push.outputs.imageid }}
-          # format: 'sarif'
-          # output: 'trivy-results.sarif'
+          format: 'sarif'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
-      # - name: Upload Trivy scan results to GitHub Code Scanning
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Code Scanning
+        if: ${{ always() && !cancelled() && steps.scan.outcome == 'success' || steps.scan.outcome == 'failure' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
