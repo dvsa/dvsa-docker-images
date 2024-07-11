@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.4.0...v0.5.0) (2024-07-11)
+
+
+### Features
+
+* bump Alpine version in PHP 8.2 & PHP 8.3 images ([#38](https://github.com/dvsa/dvsa-docker-images/issues/38)) ([c178d2a](https://github.com/dvsa/dvsa-docker-images/commit/c178d2a973857618f0b493ac235ef447873bbc05))
+
 ## [0.4.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.3.0...v0.4.0) (2024-05-09)
 
 
