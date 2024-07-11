@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine3.19
+FROM php:8.3-fpm-alpine3.20
 
 # Add supervisord.
 RUN apk add --no-cache supervisor~=4
