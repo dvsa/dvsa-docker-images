@@ -15,10 +15,6 @@ FROM ghcr.io/dvsa/dvsa-docker-images/php/8.3/fpm-nginx:0.4.0
 ## Reccommended image hierarchy
 
 ```mermaid
----
-config:
-    theme: neutral
----
 block-beta
     block:image
         columns 1
