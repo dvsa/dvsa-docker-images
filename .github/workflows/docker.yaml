@@ -86,6 +86,7 @@ jobs:
         id: mutable-meta
         uses: docker/metadata-action@v5
         with:
+          flavor: latest=false
           # Only required for ECR (the main registry) as the mirror registry (GHCR) doesn't support tag immutability.
           images: ${{ env.REGISTRY }}/${{ inputs.repository }}
           tags: |
