@@ -1,7 +1,5 @@
 # DVSA Images
-Docker Images for use in DVSA projects.
-
-The images are re-built weekly to pull in the latest patches and updates.
+Docker Images for use in DVSA projects. The images are re-built weekly to pull in the latest patches and updates.
 
 ## Tagging strategy
 
@@ -22,10 +20,13 @@ gitGraph
 ```
 
 > [!WARNING]  
-> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`.
+> **Mutable tags**: `latest`, `[major].[minor]`, & `[major]`.  
 > **Immutable tags**: `[major].[minor].[patch]`, & `[git-sha]`.
 
 ## Adding a new base image
+
+> [!NOTE]  
+> This repository is for _generic_ base images. Do not add project-specific images here. Project-specific images should be added to the project repository.
 
 1. Create a new directory in the root of this repository with the name of the image you want to create. The convention is usually [language]/[version]/[flavour] e.g. `node/12/alpine`, `php/8.3/fpm-nginx` etc.
 
