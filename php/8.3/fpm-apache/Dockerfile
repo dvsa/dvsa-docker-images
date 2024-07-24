@@ -1,19 +1,18 @@
 FROM public.ecr.aws/docker/library/php:8.3-fpm-alpine3.20
 
 RUN apk update && \
- apk upgrade --no-cache && \
- apk add --no-cache jq openrc apache2 apache2-ctl && \
- apk del php83-apache2 && \
- apk add apache2-proxy
+    apk upgrade --no-cache && \
+    apk add --no-cache jq openrc apache2 apache2-ctl && \
+    apk del php83-apache2 && \
+    apk add apache2-proxy
 
 # (Default Virtual Host is created with Apache install)
 
 # Disable prefork and enable event
-RUN sed -ri -e 's!^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!g' /etc/apache2/httpd.conf
-RUN sed -ri -e 's!^#LoadModule mpm_event_module modules/mod_mpm_event.so!LoadModule mpm_event_module modules/mod_mpm_event.so!g' /etc/apache2/httpd.conf
-RUN sed -ri -e 's!^#LoadModule expires_module modules/mod_expires.so!LoadModule expires_module modules/mod_expires.so!g' /etc/apache2/httpd.conf
-RUN sed -ri -e 's!^#LoadModule rewrite_module modules/mod_rewrite.so!LoadModule rewrite_module modules/mod_rewrite.so!g' /etc/apache2/httpd.conf
-
+RUN sed -ri -e 's!^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!g' /etc/apache2/httpd.conf && \
+    sed -ri -e 's!^#LoadModule mpm_event_module modules/mod_mpm_event.so!LoadModule mpm_event_module modules/mod_mpm_event.so!g' /etc/apache2/httpd.conf && \
+    sed -ri -e 's!^#LoadModule expires_module modules/mod_expires.so!LoadModule expires_module modules/mod_expires.so!g' /etc/apache2/httpd.conf && \
+    sed -ri -e 's!^#LoadModule rewrite_module modules/mod_rewrite.so!LoadModule rewrite_module modules/mod_rewrite.so!g' /etc/apache2/httpd.conf && 
 
 # Copy Apache FPM proxy config
 COPY ./php-fpm-proxy.conf /etc/apache2/conf.d/php-fpm-proxy.conf
@@ -32,15 +31,15 @@ RUN chmod +x /usr/local/bin/httpd-foreground
 ############################################################
 # Module pre-reqs
 RUN apk add --no-cache \
-    # required by soap
+    # Required by soap
     libxml2-dev \
-    # required by intl
+    # Required by intl
     icu-dev \
-    # required by ldap
+    # Required by ldap
     ldb-dev \
     libldap \
     openldap-dev \
-    # required for memcached installed via pecl (and possibly used by other pecl modules)
+    # Required for memcached installed via pecl (and possibly used by other pecl modules)
     libmemcached-dev \
     libmemcached \
     autoconf \
@@ -48,24 +47,20 @@ RUN apk add --no-cache \
     g++ \
     zlib-dev \
     make \
-    linux-headers
-
-
-# Modules ('mysqlnd', 'mbstring', 'pdo' and 'xml' are required but included with PHP)
-RUN docker-php-ext-install \
+    linux-headers && \
+    # Modules ('mysqlnd', 'mbstring', 'pdo' and 'xml' are required but included with PHP)
+    docker-php-ext-install \
     bcmath \
     intl \
     ldap \
     opcache \
-# pcntl is also known as the process extension
+    # PCNTL is also known as the process extension
     pcntl \
-    soap
-
-RUN pecl install apcu xdebug memcached
-RUN docker-php-ext-enable apcu xdebug memcached
-
-# remove unneeded packages after pecl installs
-RUN apk del make g++ autoconf pkgconfig
+    soap && \
+    pecl install apcu xdebug memcached && \
+    docker-php-ext-enable apcu xdebug memcached && \
+    # Finally, remove unneeded packages after pecl installs
+    apk del make g++ autoconf pkgconfig
 
 # Change default listen port from 80 to 8080
 # RUN sed -i 's|Listen 80|Listen 8080|g' /etc/apache2/httpd.conf
