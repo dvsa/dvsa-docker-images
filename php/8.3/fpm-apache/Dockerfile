@@ -34,36 +34,30 @@ RUN chmod +x /usr/local/bin/httpd-foreground
 # PHP
 ############################################################
 # Module pre-reqs
-RUN apk add --no-cache \
-    # Required by soap
-    libxml2-dev \
-    # Required by intl
-    icu-dev \
-    # Required by ldap
-    ldb-dev \
-    libldap \
-    openldap-dev \
-    # Required for memcached installed via pecl (and possibly used by other pecl modules)
-    libmemcached-dev \
-    libmemcached \
-    autoconf \
-    pkgconfig \
-    g++ \
-    zlib-dev \
-    make \
-    linux-headers && \
-    # Modules ('mysqlnd', 'mbstring', 'pdo' and 'xml' are required but included with PHP)
+RUN apk upgrade --no-cache && \
+    apk add --no-cache \
+        libxml2-dev=2.9.12-r1 \
+        icu-dev=69.1-r3 \
+        ldb-dev=2.4.1-r0 \
+        libldap=2.4.59-r1 \
+        openldap-dev=2.4.59-r1 \
+        libmemcached-dev=1.0.18-r1 \
+        libmemcached=1.0.18-r1 \
+        autoconf=2.71-r3 \
+        pkgconfig=0.29.2-r0 \
+        g++=10.3.1_git20210424-r2 \
+        zlib-dev=1.2.11-r3 \
+        make=4.3-r0 \
+        linux-headers=5.10.75-r0 && \
     docker-php-ext-install \
-    bcmath \
-    intl \
-    ldap \
-    opcache \
-    # PCNTL is also known as the process extension
-    pcntl \
-    soap && \
+        bcmath \
+        intl \
+        ldap \
+        opcache \
+        pcntl \
+        soap && \
     pecl install apcu xdebug memcached && \
     docker-php-ext-enable apcu xdebug memcached && \
-    # Finally, remove unneeded packages after pecl installs
     apk del make g++ autoconf pkgconfig
 
 # Change default listen port from 80 to 8080
