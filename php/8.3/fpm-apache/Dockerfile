@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/php:8.3-fpm-alpine3.20
+FROM php:8.3-fpm-alpine3.20
 
 # hadolint ignore=DL3018
 RUN apk update && \
