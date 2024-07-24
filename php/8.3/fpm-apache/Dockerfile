@@ -1,7 +1,6 @@
 FROM public.ecr.aws/docker/library/php:8.3-fpm-alpine3.20
 
-RUN apk update && \
-    apk upgrade --no-cache && \
+RUN apk upgrade --no-cache && \
     apk add --no-cache jq openrc apache2 apache2-ctl && \
     apk del php83-apache2 && \
     apk add apache2-proxy
@@ -12,7 +11,7 @@ RUN apk update && \
 RUN sed -ri -e 's!^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!g' /etc/apache2/httpd.conf && \
     sed -ri -e 's!^#LoadModule mpm_event_module modules/mod_mpm_event.so!LoadModule mpm_event_module modules/mod_mpm_event.so!g' /etc/apache2/httpd.conf && \
     sed -ri -e 's!^#LoadModule expires_module modules/mod_expires.so!LoadModule expires_module modules/mod_expires.so!g' /etc/apache2/httpd.conf && \
-    sed -ri -e 's!^#LoadModule rewrite_module modules/mod_rewrite.so!LoadModule rewrite_module modules/mod_rewrite.so!g' /etc/apache2/httpd.conf && 
+    sed -ri -e 's!^#LoadModule rewrite_module modules/mod_rewrite.so!LoadModule rewrite_module modules/mod_rewrite.so!g' /etc/apache2/httpd.conf
 
 # Copy Apache FPM proxy config
 COPY ./php-fpm-proxy.conf /etc/apache2/conf.d/php-fpm-proxy.conf
