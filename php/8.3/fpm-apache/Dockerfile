@@ -3,7 +3,8 @@ FROM public.ecr.aws/docker/library/php:8.3-fpm-alpine3.20
 RUN apk upgrade --no-cache && \
     apk add --no-cache jq openrc apache2 apache2-ctl && \
     apk del php83-apache2 && \
-    apk add apache2-proxy
+    apk add --nocahe apache2-proxy && \
+    rm /var/cache/apk/*
 
 # (Default Virtual Host is created with Apache install)
 
