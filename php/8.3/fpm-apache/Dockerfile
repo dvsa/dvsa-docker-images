@@ -1,32 +1,31 @@
 FROM public.ecr.aws/docker/library/php:8.3-fpm-alpine3.20
 
-RUN apk update
-RUN apk upgrade --no-cache
-
-RUN apk add --no-cache \
-    jq \
-    openrc
-#     logrotate  - # may not be needed
-
-############################################################
-# Apache
-############################################################
-
-# Apache modules ('prefork' and  'status' are required but are included with Apache)
-RUN apk add --no-cache php83-apache2
-
-# Apache itself
-RUN apk add --no-cache \
-    apache2  \
-    apache2-ctl
+RUN apk update && \
+ apk upgrade --no-cache && \
+ apk add --no-cache jq openrc apache2 apache2-ctl && \
+ apk del php83-apache2 && \
+ apk add apache2-proxy
 
 # (Default Virtual Host is created with Apache install)
 
-# Apache service start script (to be invoked later)
+# Disable prefork and enable event
+RUN sed -ri -e 's!^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!g' /etc/apache2/httpd.conf
+RUN sed -ri -e 's!^#LoadModule mpm_event_module modules/mod_mpm_event.so!LoadModule mpm_event_module modules/mod_mpm_event.so!g' /etc/apache2/httpd.conf
+RUN sed -ri -e 's!^#LoadModule expires_module modules/mod_expires.so!LoadModule expires_module modules/mod_expires.so!g' /etc/apache2/httpd.conf
+RUN sed -ri -e 's!^#LoadModule rewrite_module modules/mod_rewrite.so!LoadModule rewrite_module modules/mod_rewrite.so!g' /etc/apache2/httpd.conf
+
+
+# Copy Apache FPM proxy config
+COPY ./php-fpm-proxy.conf /etc/apache2/conf.d/php-fpm-proxy.conf
+
+# Apache Config file
+COPY ./httpd-sysconfig /etc/sysconfig/httpd
+
+# Apache service start script
 COPY httpd-foreground /usr/local/bin/
 RUN chmod +x /usr/local/bin/httpd-foreground
 
-# On application image ensure that the entrypoint script or a CMD is invoking "httpd-foreground" # CMD ["httpd-foreground"]
+# on application image ensure that the entrypoint script or a CMD is invoking "httpd-foreground" # CMD ["httpd-foreground"]
 
 ############################################################
 # PHP
@@ -52,7 +51,7 @@ RUN apk add --no-cache \
     linux-headers
 
 
-# Modules ('mbstring', 'mysqlnd', 'pdo' and 'xml' are required but included with PHP)
+# Modules ('mysqlnd', 'mbstring', 'pdo' and 'xml' are required but included with PHP)
 RUN docker-php-ext-install \
     bcmath \
     intl \
@@ -67,3 +66,10 @@ RUN docker-php-ext-enable apcu xdebug memcached
 
 # remove unneeded packages after pecl installs
 RUN apk del make g++ autoconf pkgconfig
+
+# Change default listen port from 80 to 8080
+# RUN sed -i 's|Listen 80|Listen 8080|g' /etc/apache2/httpd.conf
+EXPOSE 80
+
+# TODO - This should exist at the API level dockerfile
+# RUN sed -i 's|ErrorLog logs/error.log|ErrorLog /dev/stderr|g' /etc/apache2/httpd.conf
