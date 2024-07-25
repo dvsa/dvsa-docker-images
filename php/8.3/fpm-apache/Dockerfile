@@ -72,6 +72,3 @@ RUN apk add --no-cache \
 # Change default listen port from 80 to 8080
 # RUN sed -i 's|Listen 80|Listen 8080|g' /etc/apache2/httpd.conf
 EXPOSE 80
-
-# TODO - This should exist at the API level dockerfile
-# RUN sed -i 's|ErrorLog logs/error.log|ErrorLog /dev/stderr|g' /etc/apache2/httpd.conf
