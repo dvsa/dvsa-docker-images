@@ -24,7 +24,6 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: simple
           target-branch: ${{ github.ref_name }}
       # `release-please` doesn't provide the tag_name output when the release is not created.
       # The tag is needed for the docker image version on scheduled builds.
