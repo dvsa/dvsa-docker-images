@@ -125,8 +125,8 @@ jobs:
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ inputs.repository }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.repository }}
 
       - name: Setup Notation CLI
         if: ${{ inputs.push }}
@@ -166,7 +166,7 @@ jobs:
           platforms: linux/arm64
           load: true
           tags: image-scan:latest
-          cache-from: type=gha
+          cache-from: type=gha,scope=${{ inputs.repository }}
 
       - name: Scan
         id: scan
