@@ -10,7 +10,7 @@ RUN apk update && \
         apache2-ctl \
         build-base \
         apache2-proxy && \
-    apk del php83-apache2 && \
+    apk del php82-apache2 && \
     rm /var/cache/apk/*
 
     
