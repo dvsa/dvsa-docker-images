@@ -24,7 +24,6 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: simple
           target-branch: ${{ github.ref_name }}
       # `release-please` doesn't provide the tag_name output when the release is not created.
       # The tag is needed for the docker image version on scheduled builds.
@@ -68,8 +67,6 @@ jobs:
       fail-fast: false
       matrix:
         base:
-          - php/7.4/fpm-nginx
-          - php/8.0/fpm-nginx
           - php/8.2/fpm-nginx
           - php/8.3/fpm-nginx
           - php/8.3/fpm-apache
@@ -77,8 +74,6 @@ jobs:
           - php/8.2/cli
           - php/8.3/cli
         exclude:
-          - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/7.4/fpm-nginx') && 'ignored' || 'php/7.4/fpm-nginx' }}
-          - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.0/fpm-nginx') && 'ignored' || 'php/8.0/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-apache') && 'ignored' || 'php/8.3/fpm-apache' }}

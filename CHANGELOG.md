@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.5.0...v0.6.0) (2024-08-05)
+
+
+### Features
+
+* remove PHP 7.4 & 8.0 ([#44](https://github.com/dvsa/dvsa-docker-images/issues/44)) ([35c5d95](https://github.com/dvsa/dvsa-docker-images/commit/35c5d9544d5f64fb0803632014510ef42fa1515a))
+
 ## [0.5.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.4.0...v0.5.0) (2024-07-11)
 
 
