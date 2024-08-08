@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.6.0...v0.7.0) (2024-08-08)
+
+
+### Features
+
+* BL-17333 - Dockerfile and resources for Apache PHP 8.2, base image only ([#42](https://github.com/dvsa/dvsa-docker-images/issues/42)) ([8545e46](https://github.com/dvsa/dvsa-docker-images/commit/8545e467e0da5e22bc31f3fc4408332c18f0c3dc))
+
 ## [0.6.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.5.0...v0.6.0) (2024-08-05)
 
 
