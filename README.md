@@ -5,7 +5,7 @@ Docker Images for use in DVSA projects. The images are re-built weekly to pull i
 
 <!-- `x-release-please-start-version` -->
 ```dockerfile
-FROM ghcr.io/dvsa/dvsa-docker-images/php/8.3/fpm-nginx:0.6.0
+FROM ghcr.io/dvsa/dvsa-docker-images/php/8.3/fpm-nginx:0.7.0
 ```
 <!-- `x-release-please-end` -->
 

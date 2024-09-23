@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.6.0...v0.7.0) (2024-09-23)
+
+
+### Features
+
+* BL-17333 - Dockerfile and resources for Apache PHP 8.2, base image only ([#42](https://github.com/dvsa/dvsa-docker-images/issues/42)) ([8545e46](https://github.com/dvsa/dvsa-docker-images/commit/8545e467e0da5e22bc31f3fc4408332c18f0c3dc))
+
+
+### Bug Fixes
+
+* remove duplicate FPM config ([#52](https://github.com/dvsa/dvsa-docker-images/issues/52)) ([cbbe46b](https://github.com/dvsa/dvsa-docker-images/commit/cbbe46b2a5bb2a388bf293aa1c1c4cfa3ee031a9))
+* Remove PHP CLI 8.0 from workflows ([#51](https://github.com/dvsa/dvsa-docker-images/issues/51)) ([c6dff15](https://github.com/dvsa/dvsa-docker-images/commit/c6dff15220fa77b4c10855c983fded1ab2adf433))
+
 ## [0.6.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.5.0...v0.6.0) (2024-08-05)
 
 
