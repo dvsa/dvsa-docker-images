@@ -38,12 +38,14 @@ jobs:
           - php/8.3/fpm-nginx
           - php/8.2/cli
           - php/8.3/cli
+          - logstash/8.16.0/batch
         exclude:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'logstash/8.16.0/batch') && 'ignored' || 'logstash/8.16.0/batch' }}
     uses: ./.github/workflows/docker.yaml
     with:
       image-version: ${{ github.event.pull_request.head.sha }}
