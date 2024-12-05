@@ -7,3 +7,5 @@ RUN apt-get -y --no-install-recommends install \
     default-mysql-client=1.0.7 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+  USER 1000
