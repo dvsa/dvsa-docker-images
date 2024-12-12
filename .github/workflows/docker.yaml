@@ -170,7 +170,7 @@ jobs:
 
       - name: Scan
         id: scan
-        uses: aquasecurity/trivy-action@0.23.0
+        uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: ${{ steps.build-and-push.outputs.imageid }}
           exit-code: '1'
