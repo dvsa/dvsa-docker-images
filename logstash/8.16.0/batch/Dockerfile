@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get -y --no-install-recommends install \
-    ruby-full && \
+    ruby-full=2.7.8 && \
     gem install sinatra -v 4.1.0
 
 USER 1000
