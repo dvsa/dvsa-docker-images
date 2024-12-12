@@ -10,9 +10,6 @@ RUN apt-get update && \
     curl=7.68.0-1ubuntu2.24 \
     default-mysql-client=1.0.5ubuntu2 && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get -y --no-install-recommends install \
-    ruby-full=2.7.8 && \
-    gem install sinatra -v 4.1.0
+    rm -rf /var/lib/apt/lists/*
 
 USER 1000
