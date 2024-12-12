@@ -5,9 +5,10 @@ LABLE description="Dockerfile with logstash with Sinatra and MySQL client for VO
 
 USER root
 
-RUN apt-get -y --no-install-recommends install \ 
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install \
     curl=7.68.0-1ubuntu2.24 \
-    default-mysql-client=1.0.5ubuntu2 \
+    default-mysql-client=1.0.5ubuntu2 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     gem install sinatra -v 4.1.0
