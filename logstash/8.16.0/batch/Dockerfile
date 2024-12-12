@@ -8,4 +8,4 @@ RUN apt-get -y --no-install-recommends install \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-  USER 1000
+USER 1000
