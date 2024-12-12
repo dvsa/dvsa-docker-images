@@ -11,6 +11,6 @@ RUN apt-get update && \
     default-mysql-client=1.0.5ubuntu2 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    gem install sinatra -v 4.1.0
+    gem install sinatra
 
 USER 1000
