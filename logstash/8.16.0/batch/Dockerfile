@@ -1,7 +1,7 @@
 FROM logstash:8.16.0
 
 LABEL version="1.0"
-LABLE description="Dockerfile with logstash with Sinatra and MySQL client for VOL"
+LABEL description="Dockerfile with logstash with Sinatra and MySQL client for VOL"
 
 USER root
 
