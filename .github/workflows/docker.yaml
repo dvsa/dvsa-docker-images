@@ -74,6 +74,12 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_OIDC_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Create repository 
+        uses: int128/create-ecr-repository-action@v1
+        id: ecr
+        with:
+          repository: ${{ inputs.repository }}
 
       - name: Login to ${{ env.REGISTRY }}
         if: ${{ inputs.push }}
