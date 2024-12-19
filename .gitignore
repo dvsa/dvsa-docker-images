@@ -70,3 +70,6 @@ typings/
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
+
+# Squid config file
+squid.conf
