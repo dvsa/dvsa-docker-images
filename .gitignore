@@ -72,4 +72,4 @@ typings/
 *.tfstate.lock.info
 
 # Squid config file
-squid.conf
+*squid.conf
