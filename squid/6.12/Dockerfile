@@ -28,4 +28,5 @@ USER ${SQUID_USER}
 
 EXPOSE 3128/tcp
 
-ENTRYPOINT ${ENTRYPOINT}
+# Cannot use entrypoint env var without flagged hadolint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
