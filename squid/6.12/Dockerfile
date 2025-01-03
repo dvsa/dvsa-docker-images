@@ -13,10 +13,8 @@ COPY entrypoint.sh ${ENTRYPOINT}
 # Install squid
 RUN apk update \
  && apk --no-cache add squid=${SQUID_VERSION} \
- && rm -rf /var/lib/apt/lists/*
-
 # Create required directories and set permissions
-RUN mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
+ && mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
  && chmod -R 755 ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
  && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
 # Reference squid-docker.conf in default squid.conf
