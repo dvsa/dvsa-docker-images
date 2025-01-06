@@ -7,10 +7,15 @@ ENV SQUID_VERSION=6.12-r0 \
     ENTRYPOINT=/usr/local/bin/entrypoint.sh \
     SQUID_USER=squid
 
+LABEL title="squid-alpine"
+LABEL version="1.0"
+LABEL organisation="DVSA"
+LABEL description="Builds Alpine Squid base image that does not include bespoke Squid.conf file. This file should be added to /etc/squid/conf.d/ directory"
+
 # Copy required scripts. The squid-alpine.conf should be mounted to /etc/squid/conf.d/squid.conf at container runtime.
 COPY entrypoint.sh ${ENTRYPOINT}
 
-# Install squid
+# Install Squid
 RUN apk update \
  && apk --no-cache add squid=${SQUID_VERSION} \
 # Create required directories and set permissions
@@ -21,7 +26,7 @@ RUN apk update \
  && sed -i '1s;^;include /etc/squid/conf.d/*.conf\n;' /etc/squid/squid.conf
 
 # Set non root user
-# When squid is installed a user called squid is automatically created 
+# When Squid is installed a user called squid is automatically created 
 USER ${SQUID_USER}
 
 EXPOSE 3128/tcp
