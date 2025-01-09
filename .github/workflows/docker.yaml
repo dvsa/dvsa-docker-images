@@ -75,11 +75,10 @@ jobs:
           role-to-assume: ${{ env.AWS_OIDC_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
         
-      - name: Create repository 
-        uses: int128/create-ecr-repository-action@v1
+      - name: Create repository if not exists
         id: ecr
-        with:
-          repository: ${{ inputs.repository }}
+        run: |
+          aws ecr create-repository --repository-name ${{ inputs.repository }} --image-tag-mutability IMMUTABLE || true 
 
       - name: Login to ${{ env.REGISTRY }}
         if: ${{ inputs.push }}
