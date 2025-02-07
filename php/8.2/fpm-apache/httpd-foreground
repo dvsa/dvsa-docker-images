@@ -1,8 +1,0 @@
-#!/bin/sh
-set -e
-# (this short script is taken from the official Apache Alpine dockerfile)
-
-# Apache gets grumpy about PID files pre-existing
-rm -f /usr/local/apache2/logs/httpd.pid
-
-exec httpd -DFOREGROUND "$@"
