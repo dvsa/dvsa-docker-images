@@ -74,6 +74,7 @@ jobs:
           - php/8.3/cli
           - logstash/8.16.0/batch
           - squid/6.12
+          - java/8/amazoncorretto
         exclude:
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
@@ -82,6 +83,7 @@ jobs:
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'logstash/8.16.0/batch') && 'ignored' || 'logstash/8.16.0/batch' }}
           - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
+          - base: ${{ github.event_name == 'schedule' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
     uses: ./.github/workflows/docker.yaml
     with:
       image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule') && needs.release-please.outputs.tag_name || github.sha }}
