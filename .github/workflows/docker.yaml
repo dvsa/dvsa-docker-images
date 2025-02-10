@@ -39,6 +39,8 @@ env:
 
 jobs:
   build:
+    needs:
+      - scan
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -152,8 +154,6 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     name: Scan
-    needs:
-      - build
     steps:
       - uses: actions/checkout@v4
         with:
