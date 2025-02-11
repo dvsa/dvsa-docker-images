@@ -1,15 +1,23 @@
-FROM amazoncorretto:8
+FROM amazoncorretto:8-alpine3.21
 
-RUN yum update -y && \
-    yum install -y httpd-2.4.62 && \
-    yum clean all
+ENV APACHE_VERSION=2.4.62-r0 \
+    APACHE_USER=httpd
 
-RUN groupadd -r httpd && useradd -r -g httpd httpd
+LABEL title="apache-corretto-alpine"
+LABEL version="1.0"
+LABEL organisation="DVSA"
+LABEL description="Base Alpine image with Amazon Corretto 8 and Apache HTTP Server."
 
-RUN chown -R httpd:httpd /var/www /etc/httpd /var/run/httpd /var/log/httpd
+RUN apk update && apk upgrade && \
+    apk add --no-cache apache2=${APACHE_VERSION} && \
+    rm -rf /var/cache/apk/*
 
-USER httpd
+RUN addgroup -S ${APACHE_USER} && adduser -S -G ${APACHE_USER} ${APACHE_USER}
+
+RUN chown -R ${APACHE_USER}:${APACHE_USER} /var/www /etc/apache2 /var/run/apache2 /var/log/apache2
+
+USER ${APACHE_USER}
 
 EXPOSE 80
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
