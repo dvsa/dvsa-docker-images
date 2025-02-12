@@ -41,6 +41,7 @@ jobs:
           - logstash/8.16.0/batch
           - squid/6.12
           - java/8/amazoncorretto
+          - java/8/amazoncorretto-dropwizard
         exclude:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
@@ -50,6 +51,7 @@ jobs:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'logstash/8.16.0/batch') && 'ignored' || 'logstash/8.16.0/batch' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto-dropwizard') && 'ignored' || 'java/8/amazoncorretto-dropwizard' }}
     uses: ./.github/workflows/docker.yaml
     with:
       image-version: ${{ github.event.pull_request.head.sha }}
