@@ -1,23 +1,23 @@
 FROM amazoncorretto:8-alpine3.21
 
-ENV APACHE_VERSION=2.4.62-r0 \
-    APACHE_USER=httpd
+ENV APP_USER=dropwizard \
+    APP_GROUP=dropwizardgroup \
+    APP_HOME=/opt/dropwizard
 
-LABEL title="apache-corretto-alpine"
+LABEL title="corretto-alpine-dropwizard"
 LABEL version="1.0"
 LABEL organisation="DVSA"
-LABEL description="Base Alpine image with Amazon Corretto 8 and Apache HTTP Server."
+LABEL description="Base Alpine image with Amazon Corretto 8 for running Dropwizard applications."
 
-RUN apk update && apk upgrade && \
-    apk add --no-cache apache2=${APACHE_VERSION} && \
-    rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 
-RUN addgroup -S ${APACHE_USER} && adduser -S -G ${APACHE_USER} ${APACHE_USER}
+RUN addgroup -S ${APP_GROUP} && adduser -S ${APP_USER} -G ${APP_GROUP}
 
-RUN chown -R ${APACHE_USER}:${APACHE_USER} /var/www /etc/apache2 /var/run/apache2 /var/log/apache2
+WORKDIR ${APP_HOME}
+RUN chown -R ${APP_USER}:${APP_GROUP} ${APP_HOME} /var/log /var/cache
 
-USER ${APACHE_USER}
+USER ${APP_USER}
 
-EXPOSE 80
+EXPOSE 8080 8081
 
-ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
+CMD ["sh"]
