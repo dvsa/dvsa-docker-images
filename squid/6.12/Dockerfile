@@ -17,7 +17,8 @@ COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
 RUN apk update \
- && apk upgrade \
+ && apk --no-cache add libcrypto3=3.3.3-r0 \
+ && apk --no-cache add libssl3=3.3.3-r0 \
  && apk --no-cache add squid=${SQUID_VERSION} \
 # Create required directories and set permissions
  && mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
