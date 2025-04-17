@@ -39,6 +39,7 @@ env:
 
 jobs:
   build:
+    if: ${{ needs.scan.result == 'success' || inputs.is-schedule-release != true && needs.scan.result == 'failure'}}
     needs:
       - scan
     name: Build
