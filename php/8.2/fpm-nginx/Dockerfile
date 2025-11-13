@@ -1,7 +1,7 @@
 FROM php:8.2-fpm-alpine3.22
 
 # Add supervisord.
-RUN apk add --no-cache supervisor~=4
+RUN apk add --no-cache supervisor~=4.2.5-r5
 
 # Add nginx.
 RUN apk add --no-cache nginx~=1 \
