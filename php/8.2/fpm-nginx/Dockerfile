@@ -4,9 +4,7 @@ FROM php:8.2-fpm-alpine3.22
 RUN apk --no-cache update \
   && apk upgrade --no-cache \
   && apk add --no-cache nginx~=1 supervisor~=4 \
-  && chown -R www-data /run /var/lib/nginx /var/log/nginx \
-  && rm -rf /var/cache/apk/*
-
+  && chown -R www-data /run /var/lib/nginx /var/log/nginx
 # Copy the PHP production configuration.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
 COPY php.ini ${PHP_INI_DIR}/conf.d/zzz-dvsa-base.ini
