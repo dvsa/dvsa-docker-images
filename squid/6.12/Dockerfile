@@ -17,6 +17,7 @@ LABEL org.opencontainers.image.title="squid-alpine" \
 COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
+# hadolint ignore=DL3018
 RUN apk upgrade --no-cache \
  && apk add --no-cache \
       squid=${SQUID_VERSION} \
