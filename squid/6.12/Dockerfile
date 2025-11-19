@@ -19,7 +19,7 @@ COPY entrypoint.sh ${ENTRYPOINT}
 # Install Squid
 # openssl and ca-certificates are intentionally left unpinned to ensure the latest security updates are always installed.
 # hadolint ignore=DL3018
-RUN apk upgrade --no-cache \
+RUN apk upgrade \
  && apk add --no-cache \
       squid=${SQUID_VERSION} \
       openssl \
