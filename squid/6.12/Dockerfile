@@ -17,6 +17,7 @@ LABEL org.opencontainers.image.title="squid-alpine" \
 COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
+# openssl and ca-certificates are intentionally left unpinned to ensure the latest security updates are always installed.
 # hadolint ignore=DL3018
 RUN apk upgrade --no-cache \
  && apk add --no-cache \
