@@ -1,4 +1,4 @@
-FROM alpine:3.21.0
+FROM alpine:3.23.0
 
 ENV SQUID_VERSION=6.12-r0 \
     SQUID_LOG_DIR=/var/log/squid \
@@ -7,16 +7,18 @@ ENV SQUID_VERSION=6.12-r0 \
     ENTRYPOINT=/usr/local/bin/entrypoint.sh \
     SQUID_USER=squid
 
-LABEL title="squid-alpine"
-LABEL version="1.0"
-LABEL organisation="DVSA"
-LABEL description="Builds Alpine Squid base image that does not include bespoke Squid.conf file. This file should be added to /etc/squid/conf.d/ directory"
+LABEL org.opencontainers.image.title="squid-alpine" \
+      org.opencontainers.image.version="1.0" \
+      org.opencontainers.image.vendor="DVSA" \
+      org.opencontainers.image.description="Alpine Squid base image. Custom squid.conf files should be added to /etc/squid/conf.d/"
+
 
 # Copy required scripts. The squid-alpine.conf should be mounted to /etc/squid/conf.d/squid.conf at container runtime.
 COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
-RUN apk update \
+RUN apk upgrade --no-cache \
+ && apk add --no-cache \
  && apk add --no-cache libcrypto3 libssl3 \
  && apk --no-cache add squid=${SQUID_VERSION} \
 # Create required directories and set permissions
