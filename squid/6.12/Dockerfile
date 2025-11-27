@@ -7,19 +7,23 @@ ENV SQUID_VERSION=6.12-r0 \
     ENTRYPOINT=/usr/local/bin/entrypoint.sh \
     SQUID_USER=squid
 
-LABEL title="squid-alpine"
-LABEL version="1.0"
-LABEL organisation="DVSA"
-LABEL description="Builds Alpine Squid base image that does not include bespoke Squid.conf file. This file should be added to /etc/squid/conf.d/ directory"
+LABEL org.opencontainers.image.title="squid-alpine" \
+      org.opencontainers.image.version="1.0" \
+      org.opencontainers.image.vendor="DVSA" \
+      org.opencontainers.image.description="Alpine Squid base image. Custom squid.conf files should be added to /etc/squid/conf.d/"
+
 
 # Copy required scripts. The squid-alpine.conf should be mounted to /etc/squid/conf.d/squid.conf at container runtime.
 COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
-RUN apk update \
- && apk --no-cache add libcrypto3=3.3.3-r0 \
- && apk --no-cache add libssl3=3.3.3-r0 \
- && apk --no-cache add squid=${SQUID_VERSION} \
+# openssl and ca-certificates are intentionally left unpinned to ensure the latest security updates are always installed.
+# hadolint ignore=DL3018
+RUN apk upgrade \
+ && apk add --no-cache \
+      squid=${SQUID_VERSION} \
+      openssl \
+      ca-certificates \
 # Create required directories and set permissions
  && mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
  && chmod -R 755 ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
