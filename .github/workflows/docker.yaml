@@ -146,8 +146,6 @@ jobs:
         uses: notaryproject/notation-action/sign@v1
         with:
           plugin_name: com.amazonaws.signer.notation.plugin  # AWS Signer plugin
-          plugin_url: "" # Empty values are handled by the action which fetches and verifies the plugin automatically
-          plugin_checksum: ""
           key_id: arn:aws:signer:eu-west-1:245185850403:/signing-profiles/base_image_signer20240410115736478500000001
           target_artifact_reference: ${{ env.REGISTRY }}/${{ inputs.repository }}@${{ steps.build-and-push.outputs.digest }}
           
