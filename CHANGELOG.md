@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.7.0...v0.8.0) (2025-12-01)
+
+
+### Features
+
+* add logstash image ([#53](https://github.com/dvsa/dvsa-docker-images/issues/53)) ([dd63dc3](https://github.com/dvsa/dvsa-docker-images/commit/dd63dc3ea57d134247a46ec2982894f36f425a3d))
+* Create basic java amazoncorretto 8 image ([#59](https://github.com/dvsa/dvsa-docker-images/issues/59)) ([714d928](https://github.com/dvsa/dvsa-docker-images/commit/714d928c5787deec952ce0f145ed940fe553395c))
+* create repo action ([#56](https://github.com/dvsa/dvsa-docker-images/issues/56)) ([ac20cb9](https://github.com/dvsa/dvsa-docker-images/commit/ac20cb91b9045d81837ee24bec8d2a36512ab651))
+
+
+### Bug Fixes
+
+* in the sign artifact stage removing url and checksum fields entirely ([#65](https://github.com/dvsa/dvsa-docker-images/issues/65)) ([3131238](https://github.com/dvsa/dvsa-docker-images/commit/3131238a868c4b67531fee2089e90b8b7725d198))
+* update trivy action ([#54](https://github.com/dvsa/dvsa-docker-images/issues/54)) ([c8552a9](https://github.com/dvsa/dvsa-docker-images/commit/c8552a9ed24a36812223a5ac8c59032b7dfeed2d))
+
 ## [0.7.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.6.0...v0.7.0) (2024-09-23)
 
 
