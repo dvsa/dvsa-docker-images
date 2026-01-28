@@ -1,8 +1,7 @@
-FROM php:8.2-fpm-alpine3.20
+FROM php:8.2-fpm-alpine3.23
 
 # hadolint ignore=DL3018
 RUN apk update && \
-    apk upgrade --no-cache && \
     apk add --no-cache \
         jq \
         openrc \
@@ -10,8 +9,9 @@ RUN apk update && \
         apache2-ctl \
         build-base \
         apache2-proxy && \
-    apk del php82-apache2 && \
-    rm /var/cache/apk/*
+    # Using -f (force) ensures the build doesn't fail if the package name differs
+    apk del -f php82-apache2 || true && \
+    rm -rf /var/cache/apk/*
 
     
 # (Default Virtual Host is created with Apache install)

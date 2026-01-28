@@ -1,10 +1,12 @@
-FROM php:8.3-fpm-alpine3.20
+FROM php:8.3-fpm-alpine3.23
 
 # Add supervisord.
 RUN apk add --no-cache supervisor~=4
 
 # Add nginx.
-RUN apk add --no-cache nginx~=1 \
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache nginx~=1 \
   && chown -R www-data /run /var/lib/nginx /var/log/nginx
 
 # Copy the PHP production configuration.

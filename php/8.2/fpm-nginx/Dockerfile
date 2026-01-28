@@ -1,8 +1,8 @@
-FROM php:8.2-fpm-alpine3.22
+FROM php:8.2-fpm-alpine3.23
 
 # Prevent lag in CVE and other security resolutions and refactor run command to improve layer caching.
-RUN apk --no-cache update \
-  && apk upgrade --no-cache \
+RUN apk update && \
+    apk upgrade --no-cache \
   && apk add --no-cache nginx~=1 supervisor~=4 \
   && chown -R www-data /run /var/lib/nginx /var/log/nginx
 # Copy the PHP production configuration.
