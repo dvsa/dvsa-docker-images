@@ -1,4 +1,4 @@
-FROM alpine:3.21.0
+FROM alpine:3.23.3
 
 ENV SQUID_VERSION=6.12-r0 \
     SQUID_LOG_DIR=/var/log/squid \
@@ -39,5 +39,3 @@ EXPOSE 3128/tcp
 
 # Cannot use entrypoint env var without flagging hadolint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-# trigger build

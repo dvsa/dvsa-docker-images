@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine3.20
+FROM php:8.2-fpm-alpine3.23
 
 # hadolint ignore=DL3018
 RUN apk update && \
@@ -30,4 +30,3 @@ COPY ./httpd-sysconfig /etc/sysconfig/httpd
 # Apache service start script
 COPY httpd-foreground /usr/local/bin/
 RUN chmod +x /usr/local/bin/httpd-foreground
-# trigger build
