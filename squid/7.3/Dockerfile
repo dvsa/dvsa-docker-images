@@ -1,6 +1,6 @@
-FROM alpine:3.21.0
+FROM alpine:3.23.3
 
-ENV SQUID_VERSION=6.12-r0 \
+ENV SQUID_VERSION=7.3-r0 \
     SQUID_LOG_DIR=/var/log/squid \
     SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_CONF_DIR=/etc/squid/conf.d \
