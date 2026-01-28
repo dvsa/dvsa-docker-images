@@ -135,20 +135,6 @@ jobs:
           cache-from: type=gha,scope=${{ inputs.repository }}
           cache-to: type=gha,mode=max,scope=${{ inputs.repository }}
 
-      - name: Setup Notation CLI
-        if: ${{ inputs.push }}
-        uses: notaryproject/notation-action/setup@v1
-        with:
-          version: "1.2.0"
-
-      - name: Sign artefact
-        if: ${{ inputs.push }}
-        uses: notaryproject/notation-action/sign@v1
-        with:
-          plugin_name: com.amazonaws.signer.notation.plugin  # AWS Signer plugin
-          key_id: arn:aws:signer:eu-west-1:245185850403:/signing-profiles/base_image_signer20240410115736478500000001
-          target_artifact_reference: ${{ env.REGISTRY }}/${{ inputs.repository }}@${{ steps.build-and-push.outputs.digest }}
-          
   scan:
     runs-on: ubuntu-latest
     name: Scan
