@@ -32,7 +32,7 @@ RUN apk upgrade \
  && sed -i '1s;^;include /etc/squid/conf.d/*.conf\n;' /etc/squid/squid.conf
 
 # Set non root user
-# When Squid is installed a user called squid is automatically created 
+# When Squid is installed a user called squid is automatically created.
 USER ${SQUID_USER}
 
 EXPOSE 3128/tcp
