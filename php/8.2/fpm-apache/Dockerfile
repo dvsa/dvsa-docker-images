@@ -30,3 +30,4 @@ COPY ./httpd-sysconfig /etc/sysconfig/httpd
 # Apache service start script
 COPY httpd-foreground /usr/local/bin/
 RUN chmod +x /usr/local/bin/httpd-foreground
+# trigger build

@@ -21,3 +21,4 @@ USER ${APP_USER}
 EXPOSE 8080 8081
 
 CMD ["sh"]
+# trigger build

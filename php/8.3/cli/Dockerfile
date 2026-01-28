@@ -8,3 +8,4 @@ RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini" \
 COPY php.ini ${PHP_INI_DIR}/conf.d/zzz-dvsa-base.ini
 
 USER www-data
+# trigger build
