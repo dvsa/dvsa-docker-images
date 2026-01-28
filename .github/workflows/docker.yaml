@@ -141,7 +141,7 @@ jobs:
 #        with:
 #          version: "1.2.0"
 #
-#      - name: Sign artefact
+#      - name: Sign artifact
 #        if: ${{ inputs.push }}
 #        uses: notaryproject/notation-action/sign@v1
 #        with:
