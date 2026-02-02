@@ -1,4 +1,4 @@
-FROM alpine:3.23.0
+FROM alpine:3.22.0
 
 ENV SQUID_VERSION=6.12-r0 \
     SQUID_LOG_DIR=/var/log/squid \
