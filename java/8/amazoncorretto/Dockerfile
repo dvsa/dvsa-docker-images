@@ -1,4 +1,4 @@
-FROM amazoncorretto:8-alpine3.21
+FROM amazoncorretto:8-alpine3.23
 
 ENV APP_USER=appUser \
     APP_GROUP=appGroup \
@@ -9,7 +9,7 @@ LABEL version="1.0"
 LABEL organisation="DVSA"
 LABEL description="Base Alpine image with Amazon Corretto 8."
 
-RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 
 RUN addgroup -S ${APP_GROUP} && adduser -S ${APP_USER} -G ${APP_GROUP}
 

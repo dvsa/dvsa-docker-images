@@ -1,6 +1,6 @@
-FROM alpine:3.22.0
+FROM alpine:3.23.3
 
-ENV SQUID_VERSION=6.12-r0 \
+ENV SQUID_VERSION=7.3-r0 \
     SQUID_LOG_DIR=/var/log/squid \
     SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_CONF_DIR=/etc/squid/conf.d \
@@ -32,7 +32,7 @@ RUN apk upgrade \
  && sed -i '1s;^;include /etc/squid/conf.d/*.conf\n;' /etc/squid/squid.conf
 
 # Set non root user
-# When Squid is installed a user called squid is automatically created 
+# When Squid is installed a user called squid is automatically created.
 USER ${SQUID_USER}
 
 EXPOSE 3128/tcp
