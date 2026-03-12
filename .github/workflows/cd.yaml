@@ -58,7 +58,8 @@ jobs:
 
   docker:
     name: Docker
-    if: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs.changed-directories || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
+    # Explicitly check for 'true' string to avoid truthiness bugs
+    if: ${{ needs.release-please.outputs.release_created == 'true' || needs.orchestrator.outputs.changed-directories != null || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
     concurrency:
       group: docker-${{ matrix.base }}
     needs:
@@ -87,7 +88,8 @@ jobs:
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }} 
     uses: ./.github/workflows/docker.yaml
     with:
-      image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.release-please.outputs.tag_name || github.sha }} 
+      # Explicitly check for 'true' string to ensure correct tag selection
+      image-version: ${{ (needs.release-please.outputs.release_created == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.release-please.outputs.tag_name || github.sha }} 
       dockerfile-directory:  ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
