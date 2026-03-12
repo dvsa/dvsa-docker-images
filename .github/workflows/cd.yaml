@@ -29,11 +29,11 @@ jobs:
       # `release-please` doesn't provide the tag_name output when the release is not created.
       # The tag is needed for the docker image version on scheduled builds.
       - uses: actions/checkout@v6
-        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} # CHANGE
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
         with:
           fetch-depth: 0
       - name: Get the latest tag name
-        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} # CHANGE
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
         id: get-tag-name
         run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
@@ -58,7 +58,7 @@ jobs:
 
   docker:
     name: Docker
-    if: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs.changed-directories || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} # CHANGE
+    if: ${{ needs.release-please.outputs.release_created || needs.orchestrator.outputs.changed-directories || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
     concurrency:
       group: docker-${{ matrix.base }}
     needs:
@@ -77,22 +77,22 @@ jobs:
           - squid/7.3
           - java/8/amazoncorretto
         exclude:
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'squid/7.3') && 'ignored' || 'squid/7.3' }} # CHANGE
-          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }} # CHANGE
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'squid/7.3') && 'ignored' || 'squid/7.3' }} 
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }} 
     uses: ./.github/workflows/docker.yaml
     with:
-      image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.release-please.outputs.tag_name || github.sha }} # CHANGE
+      image-version: ${{ (needs.release-please.outputs.release_created || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.release-please.outputs.tag_name || github.sha }} 
       dockerfile-directory:  ${{ matrix.base }}
       repository: ${{ matrix.base }}
       push: true
       is-release: ${{ needs.release-please.outputs.release_created == 'true' }}
-      is-schedule-release: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} # CHANGE
+      is-schedule-release: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }} 
     permissions:
       contents: read
       id-token: write
