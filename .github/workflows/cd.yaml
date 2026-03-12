@@ -27,7 +27,7 @@ jobs:
           target-branch: ${{ github.ref_name }}
       # `release-please` doesn't provide the tag_name output when the release is not created.
       # The tag is needed for the docker image version on scheduled builds.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: ${{ github.event_name == 'schedule'}}
         with:
           fetch-depth: 0
@@ -44,10 +44,10 @@ jobs:
     outputs:
       changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: tj-actions/changed-files@v44
+      - uses: tj-actions/changed-files@v47
         id: changed-directories
         with:
           files_ignore: |
