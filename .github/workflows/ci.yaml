@@ -13,10 +13,10 @@ jobs:
     outputs:
       changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: tj-actions/changed-files@v44
+      - uses: tj-actions/changed-files@v47
         id: changed-directories
         with:
           files_ignore: |
