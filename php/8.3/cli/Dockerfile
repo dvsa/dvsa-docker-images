@@ -1,6 +1,6 @@
 FROM php:8.3-cli-alpine3.23
 
-RUN apk update \
+RUN apk update --no-cache \
     && apk upgrade --no-cache
 
 # Copy the PHP production configuration.
