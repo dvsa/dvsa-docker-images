@@ -12,24 +12,24 @@ LABEL org.opencontainers.image.title="squid-alpine" \
       org.opencontainers.image.vendor="DVSA" \
       org.opencontainers.image.description="Alpine Squid base image. Custom squid.conf files should be added to /etc/squid/conf.d/"
 
-
 # Copy required scripts. The squid-alpine.conf should be mounted to /etc/squid/conf.d/squid.conf at container runtime.
 COPY entrypoint.sh ${ENTRYPOINT}
 
 # Install Squid
 # openssl and ca-certificates are intentionally left unpinned to ensure the latest security updates are always installed.
 # hadolint ignore=DL3018
-RUN apk upgrade \
- && apk add --no-cache \
+RUN apk update --no-cache \
+    && apk upgrade --no-cache \
+    && apk add --no-cache \
       squid=${SQUID_VERSION} \
       openssl \
       ca-certificates \
-# Create required directories and set permissions
- && mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
- && chmod -R 755 ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
- && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
-# Reference squid-alpine.conf in default squid.conf
- && sed -i '1s;^;include /etc/squid/conf.d/*.conf\n;' /etc/squid/squid.conf
+    # Create required directories and set permissions \
+    && mkdir -p ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} \
+    && chmod -R 755 ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
+    && chown -R ${SQUID_USER}:${SQUID_USER} ${SQUID_LOG_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONF_DIR} ${ENTRYPOINT} \
+    # Reference squid-alpine.conf in default squid.conf \
+    && sed -i '1s;^;include /etc/squid/conf.d/*.conf\n;' /etc/squid/squid.conf
 
 # Set non root user
 # When Squid is installed a user called squid is automatically created.

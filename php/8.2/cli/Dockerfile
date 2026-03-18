@@ -1,8 +1,11 @@
 FROM php:8.2-cli-alpine3.23
 
+RUN apk update --no-cache \
+    && apk upgrade --no-cache
+
 # Copy the PHP production configuration.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini" \
-  && chown www-data "${PHP_INI_DIR}/php.ini"
+    && chown www-data "${PHP_INI_DIR}/php.ini"
 
 # Copy the configuration files.
 COPY php.ini ${PHP_INI_DIR}/conf.d/zzz-dvsa-base.ini

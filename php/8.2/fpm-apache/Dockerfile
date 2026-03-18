@@ -1,19 +1,19 @@
 FROM php:8.2-fpm-alpine3.23
 
 # hadolint ignore=DL3018
-RUN apk update && \
-    apk add --no-cache \
+RUN apk update --no-cache \
+    && apk upgrade --no-cache \
+    && apk add --no-cache \
         jq \
         openrc \
         apache2 \
         apache2-ctl \
         build-base \
-        apache2-proxy && \
+        apache2-proxy \
     # Using -f (force) ensures the build doesn't fail if the package name differs
-    apk del -f php82-apache2 || true && \
-    rm -rf /var/cache/apk/*
+    && apk del -f php82-apache2 || true \
+    && rm -rf /var/cache/apk/*
 
-    
 # (Default Virtual Host is created with Apache install)
 # Disable prefork and enable event
 RUN sed -ri -e 's!^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so!g' /etc/apache2/httpd.conf && \
@@ -29,4 +29,5 @@ COPY ./httpd-sysconfig /etc/sysconfig/httpd
 
 # Apache service start script
 COPY httpd-foreground /usr/local/bin/
+
 RUN chmod +x /usr/local/bin/httpd-foreground

@@ -1,23 +1,22 @@
 FROM php:8.3-fpm-alpine3.23
 
-# Add supervisord.
-RUN apk add --no-cache supervisor~=4
-
-# Add nginx.
-RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache nginx~=1 \
-  && chown -R www-data /run /var/lib/nginx /var/log/nginx
+# Prevent lag in CVE and other security resolutions and refactor run command to improve layer caching.
+RUN apk update --no-cache \
+    && apk upgrade --no-cache \
+    && apk add --no-cache nginx~=1 supervisor~=4 \
+    && chown -R www-data /run /var/lib/nginx /var/log/nginx
 
 # Copy the PHP production configuration.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
 
-# Copy the configuration files.
+# Copy the nginx configuration files.
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# Copy the php configuration files.
 COPY php.ini ${PHP_INI_DIR}/conf.d/zzz-dvsa-base.ini
 COPY php-fpm.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
+# Copy the supervisor configuration files.
 COPY supervisord.conf /etc/supervisord.conf
 COPY supervisord /etc/supervisor/conf.d
 
