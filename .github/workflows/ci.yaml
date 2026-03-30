@@ -42,6 +42,7 @@ jobs:
           - squid/6.12
           - squid/7.3
           - java/8/amazoncorretto
+          - java/25/amazoncorretto
         exclude:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
@@ -52,6 +53,7 @@ jobs:
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'squid/7.3') && 'ignored' || 'squid/7.3' }}
           - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
+          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/25/amazoncorretto') && 'ignored' || 'java/25/amazoncorretto' }}
     uses: ./.github/workflows/docker.yaml
     with:
       image-version: ${{ github.event.pull_request.head.sha }}
