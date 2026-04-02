@@ -72,8 +72,10 @@ jobs:
           - php/8.2/fpm-nginx
           - php/8.2/fpm-apache
           - php/8.3/fpm-nginx
+          - php/8.4/fpm-nginx
           - php/8.2/cli
           - php/8.3/cli
+          - php/8.4/cli
           - squid/6.12
           - squid/7.3
           - java/8/amazoncorretto
@@ -82,8 +84,10 @@ jobs:
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }}
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/fpm-nginx') && 'ignored' || 'php/8.4/fpm-nginx' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
+          - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/cli') && 'ignored' || 'php/8.4/cli' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'squid/7.3') && 'ignored' || 'squid/7.3' }}
           - base: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
