@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.8.0...v0.9.0) (2026-04-27)
+
+
+### Features
+
+* Always use latest packages ([#71](https://github.com/dvsa/dvsa-docker-images/issues/71)) ([8155766](https://github.com/dvsa/dvsa-docker-images/commit/815576684fcb86768a235dececeffc6f3c2b9849))
+* java 25 image ([#73](https://github.com/dvsa/dvsa-docker-images/issues/73)) ([6804df6](https://github.com/dvsa/dvsa-docker-images/commit/6804df6dd97eaa0d5ffad8acbcf7f0bf458e7364))
+
+
+### Bug Fixes
+
+* Follow least privilege principle for workflow permissions ([#70](https://github.com/dvsa/dvsa-docker-images/issues/70)) ([5c1ca5c](https://github.com/dvsa/dvsa-docker-images/commit/5c1ca5cfbe3cbb32614b2728e115c51ef04306bd))
+
 ## [0.8.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.7.0...v0.8.0) (2026-03-16)
 
 
