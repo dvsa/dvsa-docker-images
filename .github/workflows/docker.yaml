@@ -164,20 +164,17 @@ jobs:
           tags: image-scan:latest
           cache-from: type=gha,scope=${{ inputs.repository }}
 
-      - name: Scan
+      - name: Scan with Grype
+        uses: anchore/scan-action@v6
         id: scan
-        uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ steps.build-and-push.outputs.imageid }}
-          exit-code: '1'
-          ignore-unfixed: true
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "MEDIUM,HIGH,CRITICAL"
-          limit-severities-for-sarif: true
+          image: ${{ steps.build-and-push.outputs.imageid }}
+          severity-cutoff: medium
+          fail-build: true
+          output-format: sarif
 
-      - name: Upload Trivy scan results to GitHub Code Scanning
-        if: ${{ always() && !cancelled() && steps.scan.outcome == 'success' || steps.scan.outcome == 'failure' }}
-        uses: github/codeql-action/upload-sarif@v4
+      - name: Upload Grype scan results to GitHub Code Scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: ${{ steps.scan.outputs.sarif }}
