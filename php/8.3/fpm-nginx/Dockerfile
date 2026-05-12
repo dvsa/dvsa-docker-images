@@ -9,8 +9,10 @@ RUN apk update --no-cache \
         python3 \
         py3-pip \
     && chown -R www-data /run /var/lib/nginx /var/log/nginx \
-    && pip install --no-cache-dir --break-system-packages --upgrade wheel>=0.46.2 jaraco-context>=6.1.0 \
-    # Remove pip but keep python3 for supervisor
+    && pip install --no-cache-dir --break-system-packages --upgrade "wheel>=0.46.2" "jaraco-context>=6.1.0" \
+    && find /usr -name "wheel-*.dist-info" ! -name "wheel-0.46.2.dist-info" -type d -exec rm -rf {} + \
+    && find /usr -name "jaraco*context-*.dist-info" ! -name "*6.1.0*" -type d -exec rm -rf {} + \
+    && rm -rf /usr/lib/python*/site-packages/wheel-0.45.1.dist-info \
     && apk del py3-pip \
     && rm -rf /var/cache/apk/*
 
