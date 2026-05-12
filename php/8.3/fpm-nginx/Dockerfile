@@ -1,10 +1,20 @@
 FROM php:8.3-fpm-alpine3.23
 
-# Prevent lag in CVE and other security resolutions and refactor run command to improve layer caching.
+# hadolint ignore=DL3018
 RUN apk update --no-cache \
     && apk upgrade --no-cache \
-    && apk add --no-cache nginx~=1 supervisor~=4 \
-    && chown -R www-data /run /var/lib/nginx /var/log/nginx
+    && apk add --no-cache \
+        nginx~=1 \
+        supervisor~=4 \
+        python3 \
+        py3-pip \
+    && chown -R www-data /run /var/lib/nginx /var/log/nginx \
+    && pip install --no-cache-dir --break-system-packages --upgrade "wheel>=0.46.2" "jaraco-context>=6.1.0" \
+    && find /usr -name "wheel-*.dist-info" ! -name "wheel-0.46.2.dist-info" -type d -exec rm -rf {} + \
+    && find /usr -name "jaraco*context-*.dist-info" ! -name "*6.1.0*" -type d -exec rm -rf {} + \
+    && rm -rf /usr/lib/python*/site-packages/wheel-0.45.1.dist-info \
+    && apk del py3-pip \
+    && rm -rf /var/cache/apk/*
 
 # Copy the PHP production configuration.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"

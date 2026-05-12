@@ -1,6 +1,6 @@
 FROM alpine:3.23.3
 
-ENV SQUID_VERSION=7.3-r0 \
+ENV SQUID_VERSION=7.5 \
     SQUID_LOG_DIR=/var/log/squid \
     SQUID_CACHE_DIR=/var/spool/squid \
     SQUID_CONF_DIR=/etc/squid/conf.d \
@@ -21,7 +21,7 @@ COPY entrypoint.sh ${ENTRYPOINT}
 RUN apk update --no-cache \
     && apk upgrade --no-cache \
     && apk add --no-cache \
-      squid=${SQUID_VERSION} \
+      squid~=${SQUID_VERSION} \
       openssl \
       ca-certificates \
     # Create required directories and set permissions \
