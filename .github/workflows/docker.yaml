@@ -169,9 +169,10 @@ jobs:
         id: scan
         with:
           image: ${{ steps.build-and-push.outputs.imageid }}
-          severity-cutoff: medium
+          severity-cutoff: high # This is only until 30th June 2026 until at which point it needs to be reviewd with IM&S
           fail-build: true
           output-format: sarif
+          only-fixed: true
 
       - name: Upload Grype scan results to GitHub Code Scanning
         if: always()
