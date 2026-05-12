@@ -12,9 +12,12 @@ RUN apk update --no-cache \
         apache2-ctl \
         build-base \
         apache2-proxy \
-    # Force upgrade the specific vulnerable Python libs
+    # Patch packages
     && pip install --no-cache-dir --break-system-packages --upgrade wheel>=0.46.2 jaraco-context>=6.1.0 \
-    # Clean up: Remove the tools used for patching to shrink the image
+    # Find and remove any old vulnerable metadata folders to prevent false alerts
+    && find /usr/lib/python* -name "wheel-0.45.1.dist-info" -type d -exec rm -rf {} + \
+    && find /usr/lib/python* -name "jaraco_context-*" -not -path "*6.1.0*" -type d -exec rm -rf {} + \
+    # Clean up any remaining build tools
     && apk del -f php82-apache2 build-base py3-pip || true \
     && rm -rf /var/cache/apk/*
 
