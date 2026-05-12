@@ -5,18 +5,18 @@ RUN apk update --no-cache \
     && apk upgrade --no-cache \
     && apk add --no-cache \
         python3 \
-        pip3 \
+        py3-pip \
         jq \
         openrc \
         apache2 \
         apache2-ctl \
         build-base \
         apache2-proxy \
-    # Using -f (force) ensures the build doesn't fail if the package name differs
-    && apk del -f php82-apache2 || true \
-    && rm -rf /var/cache/apk/* \
-    && pip install --no-cache-dir --upgrade wheel>=0.46.2 jaraco-context>=6.1.0 \
-    && apk del py3-pip
+    # Force upgrade the specific vulnerable Python libs
+    && pip install --no-cache-dir --break-system-packages --upgrade wheel>=0.46.2 jaraco-context>=6.1.0 \
+    # Clean up: Remove the tools used for patching to shrink the image
+    && apk del -f php82-apache2 build-base py3-pip || true \
+    && rm -rf /var/cache/apk/*
 
 # (Default Virtual Host is created with Apache install)
 # Disable prefork and enable event
