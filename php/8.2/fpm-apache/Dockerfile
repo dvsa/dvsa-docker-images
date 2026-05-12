@@ -12,9 +12,10 @@ RUN apk update --no-cache \
         apache2-ctl \
         build-base \
         apache2-proxy \
-    && pip install --no-cache-dir --break-system-packages --upgrade "jaraco-context>=6.1.0" wheel>=0.46.2 \
-    && find /usr/lib/python* -name "jaraco.context-*" ! -name "*6.1.0*" -type d -exec rm -rf {} + \
-    && find /usr/lib/python* -name "jaraco_context-*" ! -name "*6.1.0*" -type d -exec rm -rf {} + \
+    && pip install --no-cache-dir --break-system-packages --upgrade "wheel>=0.46.2" "jaraco-context>=6.1.0" \
+    && find /usr -name "wheel-*.dist-info" ! -name "wheel-0.46.2.dist-info" -type d -exec rm -rf {} + \
+    && find /usr -name "jaraco*context-*.dist-info" ! -name "*6.1.0*" -type d -exec rm -rf {} + \
+    && rm -rf /usr/lib/python*/site-packages/wheel-0.45.1.dist-info \
     && apk del -f php82-apache2 build-base py3-pip || true \
     && rm -rf /var/cache/apk/*
 
