@@ -1,4 +1,4 @@
-FROM php:8.2-cli-alpine3.23
+FROM php:8.2-cli-alpine3.24
 
 RUN apk update --no-cache \
     && apk upgrade --no-cache
