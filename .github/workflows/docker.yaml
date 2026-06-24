@@ -162,7 +162,7 @@ jobs:
           platforms: linux/arm64
           load: true
           tags: image-scan:latest
-          cache-from: type=gha,scope=${{ inputs.repository }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.repository }}
 
       - name: Scan with Grype
         uses: anchore/scan-action@v6
