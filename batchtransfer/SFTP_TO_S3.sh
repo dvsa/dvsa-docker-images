@@ -192,7 +192,7 @@ do
 	aws_cmd "aws s3 cp $i \"s3://${s3_bucket}/${s3_bucket_path}/\" --region $region" "$aws_cmd_retry_attempts" || die "Unable to upload to S3! - ${aws_cmd_output}"
 	echo "Now copying to S3 archive.."
 	aws_cmd "aws s3 cp $i \"s3://${s3_bucket}/${s3_bucket_path}/archive/\" --region $region" "$aws_cmd_retry_attempts" || die "Unable to upload to S3 archive! - ${aws_cmd_output}"
-	echo "Now removing files using config file [$sftp_config_file]..[`cat $sftp_config_file`]"
+echo "Now removing files using config file [$sftp_config_file].."
 	sftp $sftp_options -F$sftp_config_file -b - sftpserver:$sftp_folder <<-EOF
 	rm $i
 	exit
