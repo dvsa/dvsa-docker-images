@@ -185,7 +185,7 @@ fi
 
 aws_cmd "aws s3 cp \"s3://${sqs_s3_bucket}/${sqs_s3_key}\" . --region $region" "$aws_cmd_retry_attempts" || die "Unable to download from S3! - ${aws_cmd_output}"
 
-echo "Now transferring file using config file [$sftp_config_file]..[`cat $sftp_config_file`]"
+echo "Now transferring file using config file [$sftp_config_file].."
 sftp $sftp_options -F$sftp_config_file -b - sftpserver:$sftp_folder <<EOF
 put $sqs_s3_key_file
 exit
