@@ -186,7 +186,7 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-for i in $(ls $sftp_file_regex)
+for i in $sftp_file_regex
 do
 	echo "Now copying to S3.."
 	aws_cmd "aws s3 cp $i \"s3://${s3_bucket}/${s3_bucket_path}/\" --region $region" "$aws_cmd_retry_attempts" || die "Unable to upload to S3! - ${aws_cmd_output}"
