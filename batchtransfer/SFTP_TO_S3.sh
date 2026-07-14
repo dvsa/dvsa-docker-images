@@ -163,15 +163,17 @@ if [ "$sendzabbix" -ne 0 ]; then
   zabbixserverhostname="${zabbixserverhostnameprefix}-${zabbixserverinstanceid}.${zabbixserverdomain}"
 fi
 
-echo "Now getting files using config file [$sftp_config_file]..[`cat $sftp_config_file`]"
-sftpgetoutput=`sftp $sftp_options -F/tmp/sftp.config -b - sftpserver:$sftp_folder <<EOF 2>&1
+echo "Now getting files using config file [$sftp_config_file].."
+sftpgetoutput=$(sftp $sftp_options -F"$sftp_config_file" -b - "sftpserver:$sftp_folder" 2>&1 <<EOF
 mget $sftp_file_regex
 exit
-EOF`
+EOF
+)
+sftp_rc=$?
 
 echo "$sftpgetoutput"
-if [ $? -ne 0 ]; then
-  if [ -z "`echo "$sftpgetoutput"|grep 'not found'`" ]; then
+if [ $sftp_rc -ne 0 ]; then
+  if ! echo "$sftpgetoutput" | grep -q 'not found'; then
     die "Failed to SFTP to $sftp_endpoint_hostname!"
   fi
 fi
