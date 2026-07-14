@@ -175,7 +175,7 @@ sqs_s3_key=`echo "$sqs_message_body"| jq -r '.Records[0].s3.object.key'`
 sqs_s3_key_file=`basename "$sqs_s3_key"`
 sqs_s3_key_file_path=`dirname "$sqs_s3_key"`
 
-if [ ! -z "`echo $sqs_s3_key_file_path|grep '/archive'`" ]; then
+if echo "$sqs_s3_key_file_path" | grep -q '/archive'; then
   #Archive file ignore.
   echo "Archive file found. Deleting SQS Handle.."
   aws_cmd "aws sqs delete-message --region $region --queue-url ${sqsurl} --receipt-handle $sqs_receipt_handle" "$aws_cmd_retry_attempts" ||  die "Failed to delete message from SQS! - ${aws_cmd_output}"
