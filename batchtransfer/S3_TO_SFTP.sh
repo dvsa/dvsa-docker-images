@@ -106,10 +106,10 @@ aws_cmd() {
   fi
 
   cmd_count=1
-  while [ $cmd_count -lt $max_retries ];
+  while [ $cmd_count -le $max_retries ];
   do
     echo "Executing [$cmd_count] - [$cmd] .."
-    aws_cmd_output=`eval "$cmd"`
+    aws_cmd_output=$(eval "$cmd" 2>&1)
     if [ $? -eq 0 ]; then
       echo "Command successful.."
       return 0
