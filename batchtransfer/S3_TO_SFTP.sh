@@ -142,7 +142,7 @@ die() {
     echo "$msg"| mailx -s "[$AWS_BATCH_JQ_NAME] Failed to transfer file" -r "$emailfrom" -S smtp="$emailserver:$emailserverport" $emailuser
     sleep 20 && echo "Email sent."
   fi
-  rm -f $sftp_private_ssh_key_file  $jumphost_private_ssh_key_file 2>/dev/null
+  rm -f "$sftp_private_ssh_key_file" "$jumphost_private_ssh_key_file" 2>/dev/null
   exit $exitcode 
 }
 
