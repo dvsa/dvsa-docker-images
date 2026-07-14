@@ -2,7 +2,7 @@
 
 project_name="S3_TO_SFTP"
 aws_cmd_retry_attempts="${AWS_CMD_RETRY_ATTEMPTS:-2}"
-region="${REGION:-}"
+region="${REGION:-eu-west-1}"
 sqsurl="${SQSURL:-}"
 squid="${SQUID:-proxy.mgmt.olcs.dvsacloud.uk}"
 squid_port="${SQUID_PORT:-3128}"
