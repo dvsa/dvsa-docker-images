@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.9.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.8.0...v0.9.0) (2026-09-07)
+
+
+### Features
+
+* add php 8.4 base images (fpm-nginx, cli) ([#81](https://github.com/dvsa/dvsa-docker-images/issues/81)) ([c2ba5b7](https://github.com/dvsa/dvsa-docker-images/commit/c2ba5b7da2f49268621d9d7503f9961a7da2444a))
+* add php 8.5 base images (fpm-nginx, cli) ([#84](https://github.com/dvsa/dvsa-docker-images/issues/84)) ([807d11e](https://github.com/dvsa/dvsa-docker-images/commit/807d11e90903f899ac148b2863203fb3efa34564))
+* Always use latest packages ([#71](https://github.com/dvsa/dvsa-docker-images/issues/71)) ([8155766](https://github.com/dvsa/dvsa-docker-images/commit/815576684fcb86768a235dececeffc6f3c2b9849))
+* java 25 image ([#73](https://github.com/dvsa/dvsa-docker-images/issues/73)) ([6804df6](https://github.com/dvsa/dvsa-docker-images/commit/6804df6dd97eaa0d5ffad8acbcf7f0bf458e7364))
+
+
+### Bug Fixes
+
+* Follow least privilege principle for workflow permissions ([#70](https://github.com/dvsa/dvsa-docker-images/issues/70)) ([5c1ca5c](https://github.com/dvsa/dvsa-docker-images/commit/5c1ca5cfbe3cbb32614b2728e115c51ef04306bd))
+
 ## [0.8.0](https://github.com/dvsa/dvsa-docker-images/compare/v0.7.0...v0.8.0) (2026-03-16)
 
 
