@@ -182,3 +182,8 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
+          # One code-scanning configuration per image, shared by ci.yaml and cd.yaml.
+          # Without this the category defaults to "<workflow file>:scan", so every
+          # image in a run overwrites the previous upload and PR results can never
+          # be matched against main.
+          category: ${{ inputs.repository }}
