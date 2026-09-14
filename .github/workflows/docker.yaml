@@ -143,7 +143,8 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    runs-on: ubuntu-latest
+    # arm64 runner so the linux/arm64 scan image builds natively instead of under QEMU
+    runs-on: ubuntu-24.04-arm
     name: Scan
     steps:
       - uses: actions/checkout@v7
