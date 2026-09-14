@@ -166,7 +166,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ inputs.repository }}
 
       - name: Scan with Grype
-        uses: anchore/scan-action@v7
+        uses: anchore/scan-action@v6
         id: scan
         with:
           image: ${{ steps.build-and-push.outputs.imageid }}
