@@ -165,7 +165,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ inputs.repository }}
 
       - name: Scan with Grype
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         id: scan
         with:
           image: ${{ steps.build-and-push.outputs.imageid }}
@@ -175,7 +175,9 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan results to GitHub Code Scanning
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        # Upload even when Grype fails the build on findings, but not when the
+        # scan itself never ran (no SARIF to upload).
+        if: ${{ !cancelled() && steps.scan.outputs.sarif != '' }}
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
