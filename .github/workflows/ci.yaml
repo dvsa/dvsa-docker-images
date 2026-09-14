@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed-directories: ${{ steps.changed-directories.outputs.all_changed_and_modified_files_count > 0 && steps.changed-directories.outputs.all_changed_files || null }}
+      # A workflow change affects every image, so build them all.
+      workflows-changed: ${{ steps.workflows.outputs.any_changed }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -23,10 +25,14 @@ jobs:
             .github/**
             *
           dir_names: true
+      - uses: tj-actions/changed-files@v47
+        id: workflows
+        with:
+          files: .github/workflows/**
 
   docker:
     name: Docker
-    if: ${{ needs.orchestrator.outputs.changed-directories }}
+    if: ${{ needs.orchestrator.outputs.changed-directories || needs.orchestrator.outputs.workflows-changed == 'true' }}
     needs:
       - orchestrator
     strategy:
@@ -42,26 +48,24 @@ jobs:
           - php/8.3/cli
           - php/8.4/cli
           - php/8.5/cli
-          - logstash/8.16.0/batch
           - squid/6.12
           - squid/7
           - java/8/amazoncorretto
           - java/25/amazoncorretto
         exclude:
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/fpm-nginx') && 'ignored' || 'php/8.4/fpm-nginx' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.5/fpm-nginx') && 'ignored' || 'php/8.5/fpm-nginx' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/cli') && 'ignored' || 'php/8.4/cli' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'php/8.5/cli') && 'ignored' || 'php/8.5/cli' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'logstash/8.16.0/batch') && 'ignored' || 'logstash/8.16.0/batch' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'squid/7') && 'ignored' || 'squid/7' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
-          - base: ${{ contains(needs.orchestrator.outputs.changed-directories, 'java/25/amazoncorretto') && 'ignored' || 'java/25/amazoncorretto' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-nginx') && 'ignored' || 'php/8.2/fpm-nginx' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/fpm-apache') && 'ignored' || 'php/8.2/fpm-apache' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/fpm-nginx') && 'ignored' || 'php/8.3/fpm-nginx' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/fpm-nginx') && 'ignored' || 'php/8.4/fpm-nginx' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.5/fpm-nginx') && 'ignored' || 'php/8.5/fpm-nginx' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.2/cli') && 'ignored' || 'php/8.2/cli' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.3/cli') && 'ignored' || 'php/8.3/cli' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.4/cli') && 'ignored' || 'php/8.4/cli' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'php/8.5/cli') && 'ignored' || 'php/8.5/cli' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'squid/6.12') && 'ignored' || 'squid/6.12' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'squid/7') && 'ignored' || 'squid/7' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'java/8/amazoncorretto') && 'ignored' || 'java/8/amazoncorretto' }}
+          - base: ${{ needs.orchestrator.outputs.workflows-changed == 'true' || contains(needs.orchestrator.outputs.changed-directories, 'java/25/amazoncorretto') && 'ignored' || 'java/25/amazoncorretto' }}
     uses: ./.github/workflows/docker.yaml
     with:
       image-version: ${{ github.event.pull_request.head.sha }}
