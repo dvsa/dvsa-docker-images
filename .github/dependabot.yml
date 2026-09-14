@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Base image bumps for the images whose FROM is a plain semver tag.
+  # Patch releases only: a new Alpine minor can change the packaged squid
+  # major, so that stays a deliberate change.
+  - package-ecosystem: docker
+    directories:
+      - /squid/*
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: alpine
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor

@@ -48,7 +48,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref || null }}
           sparse-checkout: ${{ inputs.dockerfile-directory }}
@@ -143,10 +143,11 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    runs-on: ubuntu-latest
+    # arm64 runner so the linux/arm64 scan image builds natively instead of under QEMU
+    runs-on: ubuntu-24.04-arm
     name: Scan
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref || null }}
           sparse-checkout: ${{ inputs.dockerfile-directory }}
@@ -175,7 +176,14 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan results to GitHub Code Scanning
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        # Upload even when Grype fails the build on findings, but not when the
+        # scan itself never ran (no SARIF to upload).
+        if: ${{ !cancelled() && steps.scan.outputs.sarif != '' }}
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
+          # One code-scanning configuration per image, shared by ci.yaml and cd.yaml.
+          # Without this the category defaults to "<workflow file>:scan", so every
+          # image in a run overwrites the previous upload and PR results can never
+          # be matched against main.
+          category: ${{ inputs.repository }}
