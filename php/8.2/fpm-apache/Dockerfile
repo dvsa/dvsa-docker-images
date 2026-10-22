@@ -1,4 +1,4 @@
-FROM php:8.2.35-fpm-alpine3.24
+FROM php:8.2-fpm-alpine3.24
 
 # hadolint ignore=DL3018
 RUN apk update --no-cache \
